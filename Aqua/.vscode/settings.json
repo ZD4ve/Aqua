@@ -1,0 +1,19 @@
+{
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "VsCodeTaskButtons.showCounter": false,
+    "VsCodeTaskButtons.tasks": [
+        {
+            "label": "$(file-pdf) Generate documentation",
+            "task": "Make docs",
+        }
+    ],
+    "files.associations": {
+        "*.cps": "javascript",
+        "*.tcc": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "system_error": "cpp"
+    },
+}
