@@ -7,7 +7,7 @@
 int main() {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
-    auto window = sf::RenderWindow({window_width, window_height}, "Mukodj!", sf::Style::Default, settings);
+    auto window = sf::RenderWindow({window_width, window_height}, "Aqua by ZDave!", sf::Style::Default, settings);
     window.setFramerateLimit(0);
     window.setVerticalSyncEnabled(true);
     while (window.isOpen()) {

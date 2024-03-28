@@ -11,11 +11,11 @@ doxygen Doxyfile
 echo $'\n\n'
 echo 'Creating pdf'
 echo $'-------------------------------------------------\n\n'
-cd docs/latex
+cd doc/latex
 make > /dev/null
 cd ../../..
-mv Aqua/docs/latex/refman.pdf Documentation.pdf
-rm -r Aqua/docs
+mv Aqua/doc/latex/refman.pdf Documentation.pdf
+rm -r Aqua/doc
 
 echo $'\n\n'
 echo 'Done'

@@ -13,8 +13,10 @@ sudo apt install \
     libgbm-dev \
     libfreetype-dev \
     libfreetype6 \
-    libfreetype6-dev \
-    Doxygen \
-    texlive-latex-base \
-    texlive-fonts-recommended \
-    graphviz
+    libfreetype6-dev
+#for documentation
+sudo apt install \
+    doxygen-latex \
+    graphviz \
+    python3 \
+    python-is-python3
