@@ -22,15 +22,30 @@ Fish::Fish(const Fish &rhs) : position(rhs.position), velocity(rhs.velocity), vi
         this->forces.push_back(f);
     }
 }
+Fish &Fish::operator=(const Fish& rhs){
+    if(this==&rhs) return *this;
+    velocity = rhs.velocity;
+    position = rhs.position;
+    vision = rhs.vision;
+    sp = rhs.sp;
+    for (size_t i = 0; i < forces.size(); i++) {
+        delete forces[i];
+    }
+    forces.clear();
+    forces.reserve(rhs.forces.size());
+    for (size_t i = 0; i < rhs.forces.size(); i++) {
+        Force *f = forces[i]->clone();
+        f->setMe(this);
+        this->forces.push_back(f);
+    }
+    return *this;
+}
+
 
 void Fish::draw(RenderTarget &target) {
     sp.setPosition(position);
     sp.setRotation(atan2f(velocity.y, velocity.x) + 90);
     target.draw(sp);
-}
-void Fish::move(Time dt) {
-    throw std::logic_error("TODO");
-    (void)dt;
 }
 bool Fish::canSee(Fish &nb) const{
     Vector2f dist = position - nb.position;

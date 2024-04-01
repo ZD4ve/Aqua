@@ -7,6 +7,7 @@
 namespace aq {
 class Net {
    public:
+    typedef std::forward_list<Fish *> cell;
     struct Settings {
         size_t n_of_fishes;
         size_t n_of_species;
@@ -17,51 +18,55 @@ class Net {
         const Net &net;
         const Fish &centerFish;
         const sf::Vector2u centerCord;
-        std::forward_list<Fish *>::iterator currIter;
-        std::forward_list<Fish *>::iterator currEnd;
-
+        cell::iterator currIter;
+        cell::iterator currEnd;
         size_t idx;
         sf::Vector2u currCord() const {
             return sf::Vector2u(centerCord.x + (idx % 3), centerCord.y + (idx / 3));
         }
+        void updateIters() {
+            currIter = net.grid[currCord().x+1][currCord().y+1].begin();
+            currEnd = net.grid[currCord().x+1][currCord().y+1].end();
+        }
 
        public:
-        LocalisedIterator(const Net &net, const Fish &centerFish)  : net(net), centerFish(centerFish), centerCord(net.getCord(centerFish)){
-            idx = (centerCord.x == 0 ? 1 : 0) + (centerCord.y == 0 ? 3 : 0);
-            auto &cell = net.grid[currCord().x][currCord().y];
-            currIter = cell.begin();
-            currEnd = cell.end();
-            while (currIter==currEnd || *currIter == &centerFish)
-            {
+        LocalisedIterator(const Net &net, const Fish &centerFish) : net(net), centerFish(centerFish), centerCord(net.getCord(centerFish)) {
+            idx = 0;
+            updateIters();
+            while (currIter == currEnd || *currIter == &centerFish) {
                 idx++;
-                if(atEnd()) return;
-                currIter = net.grid[currCord().x][currCord().y].begin();
+                if (atEnd()) return;
+                updateIters();
             }
         }
-        bool atEnd(){
+        bool atEnd() {
             return idx == 9;
         }
+        void gotoEnd() {
+            idx = 8;
+            updateIters();
+            currIter = currEnd;
+            idx++;
+        }
         Fish &operator*() {
-            if(idx == 9) throw std::out_of_range("Iter already at end!");
+            if (idx == 9) throw std::out_of_range("Iter already at end!");
             return **currIter;
         }
         Fish *operator->() {
-            if(atEnd()) throw std::out_of_range("Iter already at end!");
+            if (atEnd()) throw std::out_of_range("Iter already at end!");
             return *currIter;
         }
         LocalisedIterator &operator++() {
-            if(atEnd()) throw std::out_of_range("Iter already at end!");
+            if (atEnd()) throw std::out_of_range("Iter already at end!");
             currIter++;
-            if(*currIter == &centerFish) currIter++;
-            while (currIter==currEnd)
-            {
+            if (*currIter == &centerFish) currIter++;
+            while (currIter == currEnd) {
                 idx++;
-                if(atEnd()) return *this;
-                currIter = net.grid[currCord().x][currCord().y].begin();
-                if(*currIter == &centerFish) currIter++;
+                if (atEnd()) return *this;
+                updateIters();
+                if (*currIter == &centerFish) currIter++;
             }
             return *this;
-            
         }
         LocalisedIterator operator++(int) {
             auto tmp = *this;
@@ -71,14 +76,12 @@ class Net {
         bool operator==(const LocalisedIterator &rhs) {
             return currIter == rhs.currIter;
         }
-
     };
 
    private:
     const Settings opt;
-    std::vector<Fish> storage;
-
-    std::forward_list<Fish *> **grid;
+    Fish *storage;
+    cell **grid;
     size_t mapSize;
     size_t cellCnt() { return mapSize / cellSize; }
     size_t cellSize = 1;
@@ -87,6 +90,7 @@ class Net {
    public:
     Net(Settings fishSettings, size_t approximateMapSize = 1000);
     LocalisedIterator begin(const Fish &centerFish) const;
+    const LocalisedIterator cend(const Fish &centerFish) const;
     ~Net();
 };
 
