@@ -17,6 +17,7 @@ class Force {
     virtual void accum(Fish &nb) = 0;
     virtual void finalize() = 0;
     virtual ~Force() = 0;
+    virtual Force *clone() = 0;
 };
 
 }  // namespace aq

@@ -4,7 +4,7 @@
 using namespace aq;
 using sf::Vector2f;
 
-Force::Force() : me(nullptr), sum(Vector2f(0, 0)), weight(0){};
+Force::Force() : me(nullptr), weight(0){};
 
 void Force::setMe(Fish *me) {
     if(me != nullptr) throw std::logic_error("Already assigned fish to force!");
