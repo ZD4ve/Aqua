@@ -1,6 +1,7 @@
 #pragma once
 #include <forward_list>
 #include <vector>
+#include <mutex>
 
 #include "fish.hpp"
 
@@ -8,15 +9,9 @@ namespace aq {
 class Net {
    public:
     typedef std::forward_list<Fish *> cell;
-    struct Settings {
-        size_t n_of_fishes;
-        size_t n_of_species;
-        size_t srandomness_pct;
-    };
     class LocalisedIterator {
        private:
         const Net &net;
-        const Fish &centerFish;
         const sf::Vector2u centerCord;
         cell::iterator currIter;
         cell::iterator currEnd;
@@ -25,22 +20,21 @@ class Net {
             return sf::Vector2u(centerCord.x + (idx % 3), centerCord.y + (idx / 3));
         }
         void updateIters() {
-            currIter = net.grid[currCord().x+1][currCord().y+1].begin();
-            currEnd = net.grid[currCord().x+1][currCord().y+1].end();
-        }
-
-       public:
-        LocalisedIterator(const Net &net, const Fish &centerFish) : net(net), centerFish(centerFish), centerCord(net.getCord(centerFish)) {
-            idx = 0;
-            updateIters();
-            while (currIter == currEnd || *currIter == &centerFish) {
-                idx++;
-                if (atEnd()) return;
-                updateIters();
-            }
+            currIter = net.grid[currCord().x + 1][currCord().y + 1].begin();
+            currEnd = net.grid[currCord().x + 1][currCord().y + 1].end();
         }
         bool atEnd() {
             return idx == 9;
+        }
+
+       public:
+        LocalisedIterator(const Net &net, const Fish &centerFish) : net(net), centerCord(net.getCord(centerFish)) {
+            idx = 0;
+            updateIters();
+            while (currIter == currEnd) {
+                idx++;
+                updateIters();
+            }
         }
         void gotoEnd() {
             idx = 8;
@@ -59,12 +53,10 @@ class Net {
         LocalisedIterator &operator++() {
             if (atEnd()) throw std::out_of_range("Iter already at end!");
             currIter++;
-            if (*currIter == &centerFish) currIter++;
             while (currIter == currEnd) {
                 idx++;
                 if (atEnd()) return *this;
                 updateIters();
-                if (*currIter == &centerFish) currIter++;
             }
             return *this;
         }
@@ -78,19 +70,31 @@ class Net {
         }
     };
 
+    struct Settings {
+        size_t n_of_fishes;
+        size_t n_of_species;
+        size_t srandomness_pct;
+    };
+
    private:
     const Settings opt;
     Fish *storage;
     cell **grid;
     size_t mapSize;
+    double cellSize;
+    sf::Clock lastUpdate;
+    std::mutex working;
     size_t cellCnt() { return mapSize / cellSize; }
-    size_t cellSize = 1;
     sf::Vector2u getCord(const Fish &fish) const;
 
    public:
     Net(Settings fishSettings, size_t approximateMapSize = 1000);
     LocalisedIterator begin(const Fish &centerFish) const;
     const LocalisedIterator cend(const Fish &centerFish) const;
+
+    void draw(sf::RenderTarget &target);
+    void moveFish();
+
     ~Net();
 };
 

@@ -21,6 +21,8 @@ uniform float u_amplitude;       ///< Start amlitude of the noise
 uniform float u_water_level;     ///< Threshold for water [0, 1]
 uniform float u_sand_level;      ///< Threshold for sand [0, 1]
 
+uniform float u_bw_mode;         ///< B&W mask mode toggle, 0 or 1
+
 uniform vec4 col_low_water;      ///< Color for deep water
 uniform vec4 col_high_water;     ///< Color for shallow water
 uniform vec4 col_low_sand;       ///< Color for low sand
@@ -29,7 +31,7 @@ uniform vec4 col_low_grass;      ///< Color for low grass
 uniform vec4 col_high_grass;     ///< Color for high grass
 
 // Needs to be set each frame
-uniform vec2 u_resolution;       ///< Size of the window
+uniform vec2 u_resolution;    s   ///< Size of the window
 uniform vec2 u_top_left;         ///< Top left corner of the visible area
 uniform vec2 u_bottom_right;     ///< Bottom right corner of the visible area
 
@@ -121,12 +123,21 @@ float fractalNoise(vec2 pos) {
  * @param height in [0, 1]
  */
 vec4 colorFromHeight(float height) {
-    if (height < u_water_level) {
-        return mix(col_low_water, col_high_water, height/u_water_level);
-    } else if (height < u_sand_level) {
-        return mix(col_low_sand, col_high_sand, (height-u_water_level)/(u_sand_level-u_water_level));
-    } else {
-        return mix(col_low_grass, col_high_grass, (height-u_sand_level)/(1.0-u_sand_level));
+    if (u_bw_mode == 0.0) {
+        if (height < u_water_level) {
+            return mix(col_low_water, col_high_water, height/u_water_level);
+        } else if (height < u_sand_level) {
+            return mix(col_low_sand, col_high_sand, (height-u_water_level)/(u_sand_level-u_water_level));
+        } else {
+            return mix(col_low_grass, col_high_grass, (height-u_sand_level)/(1.0-u_sand_level));
+        }
+    }
+    else {
+        if (height < u_water_level) {
+            return vec4(vec3(0.0),1.0);
+        } else {
+            return vec4(vec3(1.0),1.0);
+        }
     }
 }
 

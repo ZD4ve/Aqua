@@ -20,23 +20,25 @@ class Fish {
     Fish(const Fish& rhs);
     Fish &operator=(const Fish& rhs);
     sf::Vector2f getLocation() const {return position;}
+    bool canSee(Fish &nb) const;
     void draw(sf::RenderTarget &target);
     template<typename iterator>
     void move(sf::Time dt, iterator begin, iterator end){
         for (iterator it = begin; it != end; ++it)
         {
             Fish &nb = *it;
+            if(&nb == this) continue;
+            if(!canSee(nb)) continue;
             for (auto &&f : forces) 
                 f->accum(nb);
         }
         for (auto &&f : forces)
         {
             f->finalize();
-            velocity+=f->getSum()*(dt.asMicroseconds()/1000.0f);
+            velocity+=f->getSum()*float(dt.asMicroseconds()/1000.0);
         }
         position+=velocity;
     }
-    bool canSee(Fish &nb) const;
     ~Fish();
 
 };
