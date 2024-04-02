@@ -8,10 +8,10 @@ class Island {
     sf::Sprite canvasS;
     sf::Texture canvasT;
     sf::Shader shader;
-    const sf::Vector2u &mapSize;
+    sf::Vector2u mapSize;
 
    public:
-    Island(const sf::Vector2u &mapSize);
+    explicit Island(sf::Vector2u mapSize);
     void draw(sf::RenderTarget &target);
 };
 

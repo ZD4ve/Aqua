@@ -1,7 +1,7 @@
 #pragma once
 #include <forward_list>
-#include <vector>
 #include <mutex>
+#include <vector>
 
 #include "fish.hpp"
 
@@ -28,8 +28,7 @@ class Net {
         }
 
        public:
-        LocalisedIterator(const Net &net, const Fish &centerFish) : net(net), centerCord(net.getCord(centerFish)) {
-            idx = 0;
+        LocalisedIterator(const Net &net, const Fish &centerFish) : net(net), centerCord(net.getCord(centerFish)), idx(0) {
             updateIters();
             while (currIter == currEnd) {
                 idx++;
@@ -71,9 +70,9 @@ class Net {
     };
 
     struct Settings {
-        size_t n_of_fishes;
-        size_t n_of_species;
-        size_t srandomness_pct;
+        size_t n_of_fishes = 100;
+        size_t n_of_species = 1;
+        size_t randomness_pct = 0;
     };
 
    private:
@@ -87,10 +86,11 @@ class Net {
     size_t cellCnt() { return mapSize / cellSize; }
     sf::Vector2u getCord(const Fish &fish) const;
 
-   public:
-    Net(Settings fishSettings, size_t approximateMapSize = 1000);
     LocalisedIterator begin(const Fish &centerFish) const;
     const LocalisedIterator cend(const Fish &centerFish) const;
+
+   public:
+    explicit Net(Settings fishSettings, size_t mapSize = 1000);
 
     void draw(sf::RenderTarget &target);
     void moveFish();

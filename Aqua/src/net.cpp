@@ -17,9 +17,9 @@ Net::Net(Settings fishSettings, size_t mapSize) : opt(fishSettings), mapSize(map
 
         if (max_vis < vis) max_vis = vis;
     }
-    size_t cnt = floor(mapSize / (double)max_vis);
+    size_t cnt = floor(mapSize / static_cast<double>(max_vis));
     if (cnt == 0) throw std::logic_error("Fish see farther than map size!");
-    cellSize = mapSize / (double)cnt;
+    cellSize = mapSize / static_cast<double>(cnt);
     grid = new Net::cell *[cellCnt() + 2];
     grid[0] = new Net::cell[(cellCnt() + 2) * (cellCnt() + 2)];
     for (size_t i = 1; i < cellCnt() + 2; i++) {
@@ -65,7 +65,7 @@ void Net::moveFish() {
     sf::Time dt = lastUpdate.restart();
     for (size_t i = 0; i < opt.n_of_fishes; i++) {
         storage[i].move(dt, storage, storage + opt.n_of_fishes);
-        // TODO paralell with localIter
+        // TODO: paralell with localIter
     }
     working.unlock();
 }

@@ -1,9 +1,10 @@
 #include "island.hpp"
+
 #include <ctime>
 
 using namespace aq;
 
-Island::Island(const sf::Vector2u &mapSize) : mapSize(mapSize) {
+Island::Island(sf::Vector2u mapSize) : mapSize(mapSize) {
     if (!sf::Shader::isAvailable()) throw std::runtime_error("Shaders are not available on this machine!");
     canvasT.create(mapSize.x, mapSize.y);
     canvasS = sf::Sprite(canvasT);
