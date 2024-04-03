@@ -12,17 +12,17 @@ Island::Island(sf::Vector2u mapSize) : mapSize(mapSize) {
     srand(time(nullptr));
     shader.setUniform("u_seed", sf::Glsl::Vec2(rand() % 1000, rand() % 1000));
     shader.setUniform("u_octaves", 5);
-    shader.setUniform("u_gridSize", 500.0f);
-    shader.setUniform("u_amplitude", 2.0f);
-    shader.setUniform("u_bw_mode", 0.0f);
+    shader.setUniform("u_gridSize", 500.0F);
+    shader.setUniform("u_amplitude", 2.0F);
+    shader.setUniform("u_bw_mode", 0.0F);
     shader.setUniform("col_low_water", sf::Glsl::Vec4(sf::Color(0, 26, 51)));
     shader.setUniform("col_high_water", sf::Glsl::Vec4(sf::Color(0, 102, 204)));
     shader.setUniform("col_low_sand", sf::Glsl::Vec4(sf::Color(246, 215, 176)));
     shader.setUniform("col_high_sand", sf::Glsl::Vec4(sf::Color(255, 191, 146)));
     shader.setUniform("col_low_grass", sf::Glsl::Vec4(sf::Color(65, 152, 10)));
     shader.setUniform("col_high_grass", sf::Glsl::Vec4(sf::Color(19, 109, 21)));
-    shader.setUniform("u_water_level", 0.6f);
-    shader.setUniform("u_sand_level", 0.7f);
+    shader.setUniform("u_water_level", 0.6F);
+    shader.setUniform("u_sand_level", 0.7F);
 }
 
 void Island::draw(sf::RenderTarget &target) {

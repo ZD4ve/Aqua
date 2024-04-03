@@ -85,5 +85,6 @@
         "semaphore": "cpp",
         "stop_token": "cpp",
         "thread": "cpp"
-    }
+    },
+    "editor.formatOnSave": true
 }

@@ -15,7 +15,7 @@ class Net {
         const sf::Vector2u centerCord;
         cell::iterator currIter;
         cell::iterator currEnd;
-        size_t idx;
+        size_t idx{0};
         sf::Vector2u currCord() const {
             return sf::Vector2u(centerCord.x + (idx % 3), centerCord.y + (idx / 3));
         }
@@ -23,12 +23,12 @@ class Net {
             currIter = net.grid[currCord().x + 1][currCord().y + 1].begin();
             currEnd = net.grid[currCord().x + 1][currCord().y + 1].end();
         }
-        bool atEnd() {
+        bool atEnd() const {
             return idx == 9;
         }
 
        public:
-        LocalisedIterator(const Net &net, const Fish &centerFish) : net(net), centerCord(net.getCord(centerFish)), idx(0) {
+        LocalisedIterator(const Net &net, const Fish &centerFish) : net(net), centerCord(net.getCord(centerFish)){
             updateIters();
             while (currIter == currEnd) {
                 idx++;
@@ -83,11 +83,11 @@ class Net {
     double cellSize;
     sf::Clock lastUpdate;
     std::mutex working;
-    size_t cellCnt() { return mapSize / cellSize; }
+    size_t cellCnt() const { return mapSize / cellSize; }
     sf::Vector2u getCord(const Fish &fish) const;
 
     LocalisedIterator begin(const Fish &centerFish) const;
-    const LocalisedIterator cend(const Fish &centerFish) const;
+    LocalisedIterator end(const Fish &centerFish) const;
 
    public:
     explicit Net(Settings fishSettings, size_t mapSize = 1000);

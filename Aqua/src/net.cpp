@@ -11,9 +11,9 @@ Net::Net(Settings fishSettings, size_t mapSize) : opt(fishSettings), mapSize(map
     size_t max_vis = 1;
     for (size_t i = 0; i < opt.n_of_fishes; i++) {
         // TODO: Fish generation
-        size_t vis = 100;
-        Fish f = Fish({0, 0}, tmpF, vis);
-        storage[i] = f;
+        float vis = 100;
+        Fish fish = Fish({0, 0}, tmpF, vis);
+        storage[i] = fish;
 
         if (max_vis < vis) max_vis = vis;
     }
@@ -26,9 +26,9 @@ Net::Net(Settings fishSettings, size_t mapSize) : opt(fishSettings), mapSize(map
         grid[i] = grid[i - 1] + cellCnt() + 2;
     }
     for (size_t i = 0; i < opt.n_of_fishes; i++) {
-        Fish &f = storage[i];
-        sf::Vector2u pos = getCord(f);
-        grid[pos.x + 1][pos.y + 1].emplace_front(&f);
+        Fish &fish = storage[i];
+        sf::Vector2u pos = getCord(fish);
+        grid[pos.x + 1][pos.y + 1].emplace_front(&fish);
     }
 }
 
@@ -46,7 +46,7 @@ sf::Vector2u Net::getCord(const Fish &fish) const {
 Net::LocalisedIterator Net::begin(const Fish &centerFish) const {
     return Net::LocalisedIterator(*this, centerFish);
 }
-const Net::LocalisedIterator Net::cend(const Fish &centerFish) const {
+Net::LocalisedIterator Net::end(const Fish &centerFish) const {
     auto iter = Net::LocalisedIterator(*this, centerFish);
     iter.gotoEnd();
     return iter;
@@ -62,9 +62,9 @@ void Net::draw(sf::RenderTarget &target) {
 
 void Net::moveFish() {
     working.lock();
-    sf::Time dt = lastUpdate.restart();
+    sf::Time deltaT = lastUpdate.restart();
     for (size_t i = 0; i < opt.n_of_fishes; i++) {
-        storage[i].move(dt, storage, storage + opt.n_of_fishes);
+        storage[i].move(deltaT, storage, storage + opt.n_of_fishes);
         // TODO: paralell with localIter
     }
     working.unlock();
