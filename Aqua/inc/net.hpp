@@ -28,13 +28,7 @@ class Net {
         }
 
        public:
-        LocalisedIterator(const Net &net, const Fish &centerFish) : net(net), centerCord(net.getCord(centerFish)){
-            updateIters();
-            while (currIter == currEnd) {
-                idx++;
-                updateIters();
-            }
-        }
+        LocalisedIterator(const Net &net, const Fish &centerFish);
         void gotoEnd() {
             idx = 8;
             updateIters();
@@ -49,16 +43,7 @@ class Net {
             if (atEnd()) throw std::out_of_range("Iter already at end!");
             return *currIter;
         }
-        LocalisedIterator &operator++() {
-            if (atEnd()) throw std::out_of_range("Iter already at end!");
-            currIter++;
-            while (currIter == currEnd) {
-                idx++;
-                if (atEnd()) return *this;
-                updateIters();
-            }
-            return *this;
-        }
+        LocalisedIterator &operator++();
         LocalisedIterator operator++(int) {
             auto tmp = *this;
             operator++();
