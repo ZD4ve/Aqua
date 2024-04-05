@@ -2,16 +2,6 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "type": "cmake",
-            "label": "CMake: configure",
-            "command": "configure",
-            "problemMatcher": [],
-            "detail": "CMake configure on open",
-            "runOptions": {
-                "runOn": "folderOpen"
-            }
-        },
-        {
             "type": "shell",
             "label": "Make docs",
             "command": "bash ../create_docs.sh",
