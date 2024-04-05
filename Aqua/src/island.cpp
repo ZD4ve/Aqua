@@ -1,7 +1,5 @@
 #include "island.hpp"
 
-#include <ctime>
-
 using namespace aq;
 
 Island::Island(sf::Vector2u mapSize) : mapSize(mapSize) {
@@ -9,8 +7,8 @@ Island::Island(sf::Vector2u mapSize) : mapSize(mapSize) {
     canvasT.create(mapSize.x, mapSize.y);
     canvasS = sf::Sprite(canvasT);
     if (!shader.loadFromFile("src/perlin.frag", sf::Shader::Fragment)) throw std::runtime_error("Could not load shader!");
-    srand(time(nullptr));
-    shader.setUniform("u_seed", sf::Glsl::Vec2(rand() % 1000, rand() % 1000));
+    std::srand(std::time(nullptr));
+    shader.setUniform("u_seed", sf::Glsl::Vec2(std::rand() % 5000 - 2500, std::rand() % 5000 - 2500));
     shader.setUniform("u_octaves", 5);
     shader.setUniform("u_gridSize", 500.0F);
     shader.setUniform("u_amplitude", 2.0F);
