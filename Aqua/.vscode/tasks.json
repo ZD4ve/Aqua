@@ -9,6 +9,12 @@
             "presentation": {
                 "clear": true
             }
+        },
+        {
+            "type": "shell",
+            "label": "Sync to mnt",
+            "command": "bash ../win_sync.sh",
+            "problemMatcher": [],
         }
     ]
 }

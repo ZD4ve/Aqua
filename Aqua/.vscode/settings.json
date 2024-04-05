@@ -5,6 +5,10 @@
         {
             "label": "$(file-pdf) Generate documentation",
             "task": "Make docs",
+        },
+        {
+            "label": "$(repo-sync) Sync to Windows",
+            "task": "Sync to mnt",
         }
     ],
     "C_Cpp.files.exclude": {
