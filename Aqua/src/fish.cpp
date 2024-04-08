@@ -12,7 +12,7 @@ Fish::Fish() {
     instance_cnt++;
 }
 
-Fish::Fish(Vector2f pos, const std::vector<Force *> &forces, float vision, sf::Color color) : position(pos), vision(std::abs(vision)) {
+Fish::Fish(sf::Vector2f pos, const std::vector<Force *> &forces, float vision, sf::Color color) : position(pos), vision(std::abs(vision)) {
     this->forces.reserve(forces.size());
     for (const auto &f : forces) {
         Force *force = f->clone();

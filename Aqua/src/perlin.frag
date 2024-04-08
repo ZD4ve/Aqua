@@ -1,7 +1,7 @@
 /**
  * @brief Simple 2D perlin noise shader
  * @details Code based on the the Perlin noise wikipedia page: https://en.wikipedia.org/wiki/Perlin_noise
- * @namespace GLSL
+ * @namespace shader
  * @class PerlinNoise
  */
 #version 150
