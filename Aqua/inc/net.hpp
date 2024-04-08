@@ -3,6 +3,7 @@
 #include <mutex>
 #include <vector>
 
+#include "breeder.hpp"
 #include "fish.hpp"
 
 namespace aq {
@@ -54,14 +55,8 @@ class Net {
         }
     };
 
-    struct Settings {
-        size_t n_of_fishes = 100;
-        size_t n_of_species = 1;
-        size_t randomness_pct = 0;
-    };
-
    private:
-    const Settings opt;
+    size_t fish_cnt;
     Fish *storage;
     cell **grid;
     size_t mapSize;
@@ -75,7 +70,7 @@ class Net {
     LocalisedIterator end(const Fish &centerFish) const;
 
    public:
-    explicit Net(Settings fishSettings, size_t mapSize = 1000);
+    explicit Net(Breeder breeder, size_t mapSize = 1000);
 
     void draw(sf::RenderTarget &target);
     void moveFish();

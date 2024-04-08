@@ -31,7 +31,7 @@ uniform vec4 col_low_grass;      ///< Color for low grass
 uniform vec4 col_high_grass;     ///< Color for high grass
 
 // Needs to be set each frame
-uniform vec2 u_resolution;    s   ///< Size of the window
+uniform vec2 u_resolution;       ///< Size of the window
 uniform vec2 u_top_left;         ///< Top left corner of the visible area
 uniform vec2 u_bottom_right;     ///< Bottom right corner of the visible area
 

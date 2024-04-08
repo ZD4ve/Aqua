@@ -5,7 +5,14 @@
 using namespace aq;
 using namespace sf;
 
-Fish::Fish(Vector2f pos, const std::vector<Force *> &forces, float vision) : position(pos), vision(std::abs(vision)) {
+sf::Texture *Fish::tex = nullptr;
+size_t Fish::instance_cnt = 0;
+
+Fish::Fish() {
+    instance_cnt++;
+}
+
+Fish::Fish(Vector2f pos, const std::vector<Force *> &forces, float vision, sf::Color color) : position(pos), vision(std::abs(vision)) {
     this->forces.reserve(forces.size());
     for (const auto &f : forces) {
         Force *force = f->clone();
@@ -13,6 +20,19 @@ Fish::Fish(Vector2f pos, const std::vector<Force *> &forces, float vision) : pos
         this->forces.push_back(force);
     }
     // TODO: sprite
+    if (tex == nullptr) {
+        tex = new sf::Texture();
+        if (!tex->loadFromFile("asset/fish.png")) {
+            throw std::runtime_error("Fish texture load fail!");
+        }
+        tex->setSmooth(false);
+    }
+    sp = sf::Sprite(*tex);
+    sf::Vector2u tex_size = tex->getSize();
+    sp.setOrigin(tex_size.x / 2, tex_size.y / 2);
+    sp.setScale(sf::Vector2f(10.0 / tex_size.y, 10.0 / tex_size.y));
+    sp.setColor(color);
+    ++instance_cnt;
 }
 Fish::Fish(const Fish &rhs) : position(rhs.position), velocity(rhs.velocity), vision(rhs.vision), sp(rhs.sp) {
     this->forces.reserve(rhs.forces.size());
@@ -21,6 +41,7 @@ Fish::Fish(const Fish &rhs) : position(rhs.position), velocity(rhs.velocity), vi
         force->setMe(this);
         this->forces.push_back(force);
     }
+    ++instance_cnt;
 }
 Fish &Fish::operator=(const Fish &rhs) {
     if (this == &rhs) return *this;
@@ -53,5 +74,10 @@ bool Fish::canSee(Fish &near) const {
 Fish::~Fish() {
     for (auto &force : forces) {
         delete force;
+    }
+    --instance_cnt;
+    if (instance_cnt == 0) {
+        delete tex;
+        tex = nullptr;
     }
 }

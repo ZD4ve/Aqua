@@ -5,10 +5,11 @@
 #include <thread>
 
 using namespace aq;
+using namespace std::chrono;
 
 Engine::Engine(sf::Vector2u window_size) : endLife(true) {
     sf::ContextSettings win_settings;
-    win_settings.antialiasingLevel = 8;
+    // win_settings.antialiasingLevel = 8;
     win_settings.majorVersion = 3;
     win_settings.minorVersion = 2;
     sf::VideoMode win_size = sf::VideoMode(window_size.x, window_size.y);
@@ -18,8 +19,8 @@ Engine::Engine(sf::Vector2u window_size) : endLife(true) {
 
     island = new Island({1000, 1000});
 
-    Net::Settings fish_settings;
-    net = new Net(fish_settings, 1000);
+    Breeder::Settings fish_settings;
+    net = new Net(Breeder(fish_settings), 1000);
 }
 
 Engine::~Engine() {
@@ -42,6 +43,7 @@ void Engine::stopParalellLife() {
 void Engine::life() {
     while (!endLife) {
         net->moveFish();
+        std::this_thread::sleep_for(1ns);
     }
 }
 void Engine::draw() {

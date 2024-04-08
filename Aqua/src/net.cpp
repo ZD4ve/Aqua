@@ -4,20 +4,11 @@
 #include <cmath>
 
 using namespace aq;
+using namespace std::chrono;
 
-Net::Net(Settings fishSettings, size_t mapSize) : opt(fishSettings), mapSize(mapSize) {
-    storage = new Fish[opt.n_of_fishes];
-    std::vector<Force *> tmpF;
-    size_t max_vis = 1;
-    for (size_t i = 0; i < opt.n_of_fishes; i++) {
-        // TODO: Fish generation
-        float vis = 100;
-        Fish fish = Fish({0, 0}, tmpF, vis);
-        storage[i] = fish;
-
-        if (max_vis < vis) max_vis = vis;
-    }
-    size_t cnt = floor(mapSize / static_cast<double>(max_vis));
+Net::Net(Breeder breeder, size_t mapSize) : fish_cnt(breeder.getCnt()), mapSize(mapSize) {
+    storage = breeder.make();
+    size_t cnt = floor(mapSize / breeder.getMaxVision());
     if (cnt == 0) throw std::logic_error("Fish see farther than map size!");
     cellSize = mapSize / static_cast<double>(cnt);
     grid = new Net::cell *[cellCnt() + 2];
@@ -25,7 +16,7 @@ Net::Net(Settings fishSettings, size_t mapSize) : opt(fishSettings), mapSize(map
     for (size_t i = 1; i < cellCnt() + 2; i++) {
         grid[i] = grid[i - 1] + cellCnt() + 2;
     }
-    for (size_t i = 0; i < opt.n_of_fishes; i++) {
+    for (size_t i = 0; i < fish_cnt; i++) {
         Fish &fish = storage[i];
         sf::Vector2u pos = getCord(fish);
         grid[pos.x + 1][pos.y + 1].emplace_front(&fish);
@@ -54,7 +45,7 @@ Net::LocalisedIterator Net::end(const Fish &centerFish) const {
 
 void Net::draw(sf::RenderTarget &target) {
     working.lock();
-    for (size_t i = 0; i < opt.n_of_fishes; i++) {
+    for (size_t i = 0; i < fish_cnt; i++) {
         storage[i].draw(target);
     }
     working.unlock();
@@ -63,8 +54,8 @@ void Net::draw(sf::RenderTarget &target) {
 void Net::moveFish() {
     working.lock();
     sf::Time deltaT = lastUpdate.restart();
-    for (size_t i = 0; i < opt.n_of_fishes; i++) {
-        storage[i].move(deltaT, storage, storage + opt.n_of_fishes);
+    for (size_t i = 0; i < fish_cnt; i++) {
+        storage[i].move(deltaT, storage, storage + fish_cnt);
         // TODO: paralell with localIter
     }
     working.unlock();

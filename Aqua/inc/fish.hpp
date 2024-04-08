@@ -12,12 +12,15 @@ class Fish {
     sf::Vector2f velocity;
     std::vector<Force *> forces;
 
+    static sf::Texture *tex;
+    static size_t instance_cnt;
+
     float vision;
     sf::Sprite sp;
 
    public:
-    Fish() = default;
-    Fish(sf::Vector2f pos, const std::vector<Force *> &forces, float vision);
+    Fish();
+    Fish(sf::Vector2f pos, const std::vector<Force *> &forces, float vision, sf::Color color);
     Fish(const Fish &rhs);
     Fish &operator=(const Fish &rhs);
     sf::Vector2f getLocation() const { return position; }
