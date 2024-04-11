@@ -14,8 +14,9 @@ class Engine {
     Net *net;
     Island *island;
     std::atomic<bool> endLife;
+    const float zoomAmount = 1.3f;
     std::thread bgLife;
-
+    void zoomViewAt(sf::Vector2i pixel, bool in);
     void life();
 
    public:
