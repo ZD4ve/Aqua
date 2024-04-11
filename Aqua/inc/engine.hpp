@@ -17,6 +17,7 @@ class Engine {
     const float zoomAmount = 1.3f;
     std::thread bgLife;
     void zoomViewAt(sf::Vector2i pixel, bool in);
+    void resetView();
     void life();
 
    public:
