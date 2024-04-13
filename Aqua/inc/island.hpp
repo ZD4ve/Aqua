@@ -13,6 +13,7 @@ class Island {
    public:
     explicit Island(sf::Vector2u mapSize);
     void draw(sf::RenderTarget &target);
+    sf::Vector2u getMapSize() { return mapSize; }
 };
 
 }  // namespace aq

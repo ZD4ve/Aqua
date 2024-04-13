@@ -47,7 +47,7 @@ void Engine::life() {
     }
 }
 void Engine::draw() {
-    window->clear(sf::Color::White);
+    window->clear(sf::Color(10, 44, 53));
 
     island->draw(*window);
     net->draw(*window);
@@ -58,23 +58,71 @@ void Engine::draw() {
 // src: https://github.com/SFML/SFML/wiki/Source:-Zoom-View-At-(specified-pixel)
 void Engine::zoomViewAt(sf::Vector2i pixel, bool in) {
     float zoom = in ? zoomAmount : 1 / zoomAmount;
-    const sf::Vector2f beforeCoord{window->mapPixelToCoords(pixel)};
-    sf::View view{window->getView()};
+    const sf::Vector2f beforeCoord = window->mapPixelToCoords(pixel);
+    sf::View view = window->getView();
     view.zoom(zoom);
     window->setView(view);
-    const sf::Vector2f afterCoord{window->mapPixelToCoords(pixel)};
-    const sf::Vector2f offsetCoords{beforeCoord - afterCoord};
+    const sf::Vector2f afterCoord = window->mapPixelToCoords(pixel);
+    const sf::Vector2f offsetCoords = beforeCoord - afterCoord;
     view.move(offsetCoords);
+    window->setView(view);
+}
+void Engine::resetView() {
+    sf::Vector2u map = island->getMapSize();
+    sf::Vector2u screen = window->getSize();
+    sf::View view(sf::FloatRect(0.f, 0.f, screen.x, screen.y));
+    view.setCenter(map.x / 2.f, map.y / 2.f);
+    double h_ratio = map.x / double(screen.x);
+    double v_ratio = map.y / double(screen.y);
+    view.zoom(std::max(h_ratio, v_ratio));
     window->setView(view);
 }
 
 void Engine::handeEvents() {
-    auto &win = *window;
-    for (auto event = sf::Event{}; win.pollEvent(event);) {
+    static bool mouse_down = false;
+    static sf::Vector2i last_pos;
+
+    for (sf::Event event{}; window->pollEvent(event);) {
+        using sf::Event;
         switch (event.type) {
-            case sf::Event::Closed:
-                win.close();
+            case Event::Closed: {
+                window->close();
                 break;
+            }
+            case Event::MouseButtonPressed:
+            case Event::MouseButtonReleased: {
+                mouse_down = sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
+                last_pos = sf::Mouse::getPosition(*window);
+                break;
+            }
+            case Event::MouseMoved: {
+                if (!mouse_down) break;
+                sf::View view = window->getView();
+                sf::Vector2i current_pos = {event.mouseMove.x, event.mouseMove.y};
+                view.move(window->mapPixelToCoords(last_pos) - window->mapPixelToCoords(current_pos));
+                last_pos = current_pos;
+                window->setView(view);
+                break;
+            }
+            case Event::MouseWheelScrolled: {
+                zoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, event.mouseWheelScroll.delta < 0);
+                break;
+            }
+            case Event::KeyPressed: {
+                using sf::Keyboard;
+                switch (event.key.code) {
+                    case sf::Keyboard::R:
+                        resetView();
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            }
+            case Event::Resized: {
+                resetView();
+                break;
+            }
             default:
                 break;
         }
