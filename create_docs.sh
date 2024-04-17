@@ -14,7 +14,7 @@ echo $'-------------------------------------------------\n\n'
 cd doc/latex
 make > /dev/null
 cd ../../..
-mv Aqua/doc/latex/refman.pdf Documentation.pdf
+mv Aqua/doc/latex/refman.pdf Docs/Documentation.pdf
 rm -r Aqua/doc
 
 echo $'\n\n'
