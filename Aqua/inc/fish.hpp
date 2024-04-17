@@ -24,6 +24,7 @@ class Fish {
     Fish(const Fish &rhs);
     Fish &operator=(const Fish &rhs);
     sf::Vector2f getLocation() const { return position; }
+    sf::Vector2f getVelocity() const { return velocity; }
     bool canSee(Fish &near) const;
     void draw(sf::RenderTarget &target);
     template <typename iterator>
@@ -38,9 +39,9 @@ class Fish {
         }
         for (auto &force : forces) {
             force->finalize();
-            velocity += force->getSum() * static_cast<float>(deltaT.asMicroseconds() / 1000.0);
+            velocity += force->getSum() * deltaT.asSeconds();
         }
-        position += velocity;
+        position += velocity * deltaT.asSeconds();
     }
     ~Fish();
 };

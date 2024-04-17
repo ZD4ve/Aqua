@@ -5,7 +5,7 @@ using namespace aq;
 using sf::Vector2f;
 
 void Force::setMe(Fish *me) {
-    if (me != nullptr) throw std::logic_error("Already assigned fish to force!");
+    if (this->me != nullptr && me != nullptr) throw std::logic_error("Already assigned fish to force!");
     this->me = me;
 }
 

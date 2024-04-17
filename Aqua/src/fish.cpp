@@ -19,7 +19,6 @@ Fish::Fish(sf::Vector2f pos, const std::vector<Force *> &forces, float vision, s
         force->setMe(this);
         this->forces.push_back(force);
     }
-    // TODO: sprite
     if (tex == nullptr) {
         tex = new sf::Texture();
         if (!tex->loadFromFile("asset/fish.png")) {
@@ -29,8 +28,8 @@ Fish::Fish(sf::Vector2f pos, const std::vector<Force *> &forces, float vision, s
     }
     sp = sf::Sprite(*tex);
     sf::Vector2u tex_size = tex->getSize();
-    sp.setOrigin(tex_size.x / 2, tex_size.y / 2);
-    sp.setScale(sf::Vector2f(10.0 / tex_size.y, 10.0 / tex_size.y));
+    sp.setOrigin(tex_size.x / 2.0F, tex_size.y / 2.0F);
+    sp.setScale(sf::Vector2f(5.0 / tex_size.y, 5.0 / tex_size.y));
     sp.setColor(color);
     ++instance_cnt;
 }
@@ -64,7 +63,7 @@ Fish &Fish::operator=(const Fish &rhs) {
 
 void Fish::draw(RenderTarget &target) {
     sp.setPosition(position);
-    sp.setRotation(atan2f(velocity.y, velocity.x) + 90);
+    sp.setRotation(atan2(velocity.y, velocity.x) * 180 / M_PI + 90);
     target.draw(sp);
 }
 bool Fish::canSee(Fish &near) const {

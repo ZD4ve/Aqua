@@ -9,7 +9,7 @@ using namespace std::chrono;
 
 Engine::Engine(sf::Vector2u window_size) : endLife(true) {
     sf::ContextSettings win_settings;
-    // win_settings.antialiasingLevel = 8;
+    win_settings.antialiasingLevel = 8;
     win_settings.majorVersion = 3;
     win_settings.minorVersion = 2;
     sf::VideoMode win_size = sf::VideoMode(window_size.x, window_size.y);
@@ -20,6 +20,7 @@ Engine::Engine(sf::Vector2u window_size) : endLife(true) {
     island = new Island({1000, 1000});
 
     Breeder::Settings fish_settings;
+    fish_settings.n_of_fishes = 2000;
     net = new Net(Breeder(fish_settings), 1000);
 }
 
@@ -70,10 +71,10 @@ void Engine::zoomViewAt(sf::Vector2i pixel, bool in) {
 void Engine::resetView() {
     sf::Vector2u map = island->getMapSize();
     sf::Vector2u screen = window->getSize();
-    sf::View view(sf::FloatRect(0.f, 0.f, screen.x, screen.y));
-    view.setCenter(map.x / 2.f, map.y / 2.f);
-    double h_ratio = map.x / double(screen.x);
-    double v_ratio = map.y / double(screen.y);
+    sf::View view(sf::FloatRect(0.0F, 0.0F, screen.x, screen.y));
+    view.setCenter(map.x / 2.0F, map.y / 2.0F);
+    double h_ratio = map.x / static_cast<double>(screen.x);
+    double v_ratio = map.y / static_cast<double>(screen.y);
     view.zoom(std::max(h_ratio, v_ratio));
     window->setView(view);
 }

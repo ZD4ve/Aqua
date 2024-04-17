@@ -18,7 +18,7 @@ class Breeder {
     double max_vision = 0;
 
    public:
-    Breeder(Settings fishSettings);
+    explicit Breeder(Settings fishSettings);
     size_t getCnt() const {
         return opt.n_of_fishes;
     }
