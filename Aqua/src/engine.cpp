@@ -20,7 +20,7 @@ Engine::Engine(sf::Vector2u window_size) : endLife(true) {
     island = new Island({1000, 1000});
 
     Breeder::Settings fish_settings;
-    fish_settings.n_of_fishes = 2000;
+    fish_settings.n_of_fishes = 500;
     net = new Net(Breeder(fish_settings), 1000);
 }
 
