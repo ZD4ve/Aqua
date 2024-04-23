@@ -8,7 +8,7 @@ using namespace std::chrono;
 
 Net::Net(Breeder breeder, size_t mapSize) : fish_cnt(breeder.getCnt()), mapSize(mapSize) {
     storage = breeder.make();
-    size_t cnt = floor(mapSize / breeder.getMaxVision());
+    size_t cnt = std::floor(mapSize / breeder.getMaxVision());
     if (cnt == 0) throw std::logic_error("Fish see farther than map size!");
     cellSize = mapSize / static_cast<double>(cnt);
     grid = new Net::cell *[cellCnt() + 2];

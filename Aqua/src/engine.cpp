@@ -7,7 +7,9 @@
 using namespace aq;
 using namespace std::chrono;
 
-Engine::Engine(sf::Vector2u window_size) : endLife(true) {
+Engine::Engine(sf::Vector2u window_size, unsigned int seed) : endLife(true) {
+    std::srand(seed);
+
     sf::ContextSettings win_settings;
     win_settings.antialiasingLevel = 8;
     win_settings.majorVersion = 3;
@@ -20,8 +22,11 @@ Engine::Engine(sf::Vector2u window_size) : endLife(true) {
     island = new Island({1000, 1000});
 
     Breeder::Settings fish_settings;
-    fish_settings.n_of_fishes = 2000;
-    net = new Net(Breeder(fish_settings), 1000);
+    fish_settings.n_of_fishes = 500;
+    Breeder::Dependency dependencies;
+    dependencies.map = &island->getMap();
+    dependencies.mousPos = &mousePosition;
+    net = new Net(Breeder(fish_settings, dependencies), 1000);
 }
 
 Engine::~Engine() {
@@ -77,55 +82,4 @@ void Engine::resetView() {
     double v_ratio = map.y / static_cast<double>(screen.y);
     view.zoom(std::max(h_ratio, v_ratio));
     window->setView(view);
-}
-
-void Engine::handeEvents() {
-    static bool mouse_down = false;
-    static sf::Vector2i last_pos;
-
-    for (sf::Event event{}; window->pollEvent(event);) {
-        using sf::Event;
-        switch (event.type) {
-            case Event::Closed: {
-                window->close();
-                break;
-            }
-            case Event::MouseButtonPressed:
-            case Event::MouseButtonReleased: {
-                mouse_down = sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
-                last_pos = sf::Mouse::getPosition(*window);
-                break;
-            }
-            case Event::MouseMoved: {
-                if (!mouse_down) break;
-                sf::View view = window->getView();
-                sf::Vector2i current_pos = {event.mouseMove.x, event.mouseMove.y};
-                view.move(window->mapPixelToCoords(last_pos) - window->mapPixelToCoords(current_pos));
-                last_pos = current_pos;
-                window->setView(view);
-                break;
-            }
-            case Event::MouseWheelScrolled: {
-                zoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, event.mouseWheelScroll.delta < 0);
-                break;
-            }
-            case Event::KeyPressed: {
-                using sf::Keyboard;
-                switch (event.key.code) {
-                    case sf::Keyboard::R:
-                        resetView();
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            }
-            case Event::Resized: {
-                resetView();
-                break;
-            }
-            default:
-                break;
-        }
-    }
 }

@@ -2,18 +2,22 @@
 #include <cmath>
 
 #include "force.hpp"
+#include "island.hpp"
 
 namespace {
-float lenght(sf::Vector2f v) {
-    return hypotf(v.x, v.y);
+inline float lenght(sf::Vector2f v) {
+    return std::hypot(v.x, v.y);
 }
-sf::Vector2f normalize(sf::Vector2f v) {
+inline sf::Vector2f normalize(sf::Vector2f v) {
     float len = lenght(v);
-    if (len < 0.00001) return sf::Vector2f(sin(rand() / 1000.0), cos(rand() / 1000.0));
+    if (len < 0.00001) return sf::Vector2f(std::sin(std::rand() / 1000.0), std::cos(std::rand() / 1000.0));
     return sf::Vector2f(v.x / len, v.y / len);
 }
-float square_signed(float x) {
-    return fabs(x) * x;
+inline float square(float x) {
+    return x * x;
+}
+inline float square_signed(float x) {
+    return std::abs(x) * x;
 }
 }  // namespace
 
@@ -21,14 +25,14 @@ namespace aq {
 
 class SeparationForce : public Force {
    protected:
-    float safe_dist;
+    const float safeDist;
 
    public:
-    explicit SeparationForce(float weight, float safe_distance) : Force(weight), safe_dist(safe_distance){};
+    explicit SeparationForce(float weight, float safe_distance) : Force(weight), safeDist(safe_distance){};
     virtual void accum(Fish &near) {
         sf::Vector2f diff = near.getLocation() - me->getLocation();
         float dist = lenght(diff);
-        if (dist < safe_dist) sum -= diff * (safe_dist - dist) * (safe_dist - dist);
+        if (dist < safeDist) sum -= diff * square(safeDist - dist);
     }
     virtual void finalize() {}
     virtual ~SeparationForce() {}
@@ -90,7 +94,6 @@ class CohesionForce : public Force {
 };
 
 class WaterResistanteForce : public Force {
-   protected:
    public:
     explicit WaterResistanteForce(float weight) : Force(weight){};
     virtual void accum(Fish &near) {
@@ -109,7 +112,6 @@ class WaterResistanteForce : public Force {
 };
 
 class MinSpeedForce : public Force {
-   protected:
    public:
     explicit MinSpeedForce(float weight) : Force(weight){};
     virtual void accum(Fish &near) {
@@ -124,6 +126,62 @@ class MinSpeedForce : public Force {
     virtual ~MinSpeedForce() {}
     virtual Force *clone() {
         Force *ptr = new MinSpeedForce{*this};
+        ptr->setMe(nullptr);
+        return ptr;
+    }
+};
+
+class MouseForce : public Force {
+   protected:
+    const float fearDist;
+    const std::atomic<sf::Vector2f> &mousePosition;
+
+   public:
+    explicit MouseForce(float weight, float fear_distance, const std::atomic<sf::Vector2f> &mouse_position) : Force(weight), fearDist(fear_distance), mousePosition(mouse_position){};
+    virtual void accum(Fish &near) {
+        (void)near;
+    }
+    virtual void finalize() {
+        sf::Vector2f mouse = mousePosition.load();
+        if (mouse == sf::Vector2f(0, 0)) return;
+        sf::Vector2f diff = mouse - me->getLocation();
+        float dist = lenght(diff);
+        if (dist < fearDist) sum -= diff * (fearDist - dist);
+    }
+    virtual Force *clone() {
+        Force *ptr = new MouseForce{*this};
+        ptr->setMe(nullptr);
+        return ptr;
+    }
+};
+
+class IslandForce : public Force {
+   protected:
+    const Island::Map &map;
+
+    inline constexpr static const size_t nOfSamplePoints = 36;
+    inline constexpr static const struct {
+        float x, y;
+    } samplePoints[nOfSamplePoints] =
+        {{1.000, 0.000}, {0.940, 0.342}, {0.766, 0.643}, {0.500, 0.866}, {0.174, 0.985}, {-0.174, 0.985}, {-0.500, 0.866}, {-0.766, 0.643}, {-0.940, 0.342}, {-1.000, 0.000}, {-0.940, -0.342}, {-0.766, -0.643}, {-0.500, -0.866}, {-0.174, -0.985}, {0.174, -0.985}, {0.500, -0.866}, {0.766, -0.643}, {0.940, -0.342}, {0.667, 0.000}, {0.577, 0.333}, {0.333, 0.577}, {0.000, 0.667}, {-0.333, 0.577}, {-0.577, 0.333}, {-0.667, 0.000}, {-0.577, -0.333}, {-0.333, -0.577}, {-0.000, -0.667}, {0.333, -0.577}, {0.577, -0.333}, {0.333, 0.000}, {0.167, 0.289}, {-0.167, 0.289}, {-0.333, 0.000}, {-0.167, -0.289}, {0.167, -0.289}};
+
+   public:
+    explicit IslandForce(float weight, const Island::Map &map) : Force(weight), map(map){};
+    virtual void accum(Fish &near) {
+        (void)near;
+    }
+    virtual void finalize() {
+        float vis = me->getVision();
+        sf::Vector2f loc = me->getLocation();
+        for (size_t i = 0; i < nOfSamplePoints; i++) {
+            sf::Vector2f sample(samplePoints[i].x, samplePoints[i].y);
+            sf::Vector2f offset = sample * vis;
+            if (map(loc + offset)) continue;
+            sum -= offset / square(lenght(sample));
+        }
+    }
+    virtual Force *clone() {
+        Force *ptr = new IslandForce{*this};
         ptr->setMe(nullptr);
         return ptr;
     }

@@ -17,7 +17,7 @@ inline double FPS(nanoseconds dt) {
 constexpr double alpha = 0.1;
 
 int main() {
-    aq::Engine eng(sf::Vector2u(1920, 1080));
+    aq::Engine eng(sf::Vector2u(1920, 1080), std::time(nullptr));
 
     eng.startParalellLife();
 

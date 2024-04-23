@@ -25,7 +25,11 @@ class Fish {
     Fish &operator=(const Fish &rhs);
     sf::Vector2f getLocation() const { return position; }
     sf::Vector2f getVelocity() const { return velocity; }
-    bool canSee(Fish &near) const;
+    bool canSee(const sf::Vector2f &pos) const;
+    bool canSee(Fish &near) const {
+        return canSee(near.position);
+    }
+    float getVision() { return vision; }
     void draw(sf::RenderTarget &target);
     template <typename iterator>
     void move(sf::Time deltaT, iterator begin, iterator end) {

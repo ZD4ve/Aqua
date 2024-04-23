@@ -1,5 +1,7 @@
 #include "island.hpp"
 
+#include <cmath>
+
 using namespace aq;
 
 Island::Island(sf::Vector2u mapSize) : mapSize(mapSize) {
@@ -7,7 +9,6 @@ Island::Island(sf::Vector2u mapSize) : mapSize(mapSize) {
     canvasT.create(mapSize.x, mapSize.y);
     canvasS = sf::Sprite(canvasT);
     if (!shader.loadFromFile("src/perlin.frag", sf::Shader::Fragment)) throw std::runtime_error("Could not load shader!");
-    std::srand(std::time(nullptr));
     shader.setUniform("u_seed", sf::Glsl::Vec2(std::rand() % 5000 - 2500, std::rand() % 5000 - 2500));
     shader.setUniform("u_octaves", 5);
     shader.setUniform("u_gridSize", 500.0F);
@@ -21,6 +22,15 @@ Island::Island(sf::Vector2u mapSize) : mapSize(mapSize) {
     shader.setUniform("col_high_grass", sf::Glsl::Vec4(sf::Color(19, 109, 21)));
     shader.setUniform("u_water_level", 0.6F);
     shader.setUniform("u_sand_level", 0.7F);
+
+    shader.setUniform("u_bw_mode", 1.0F);
+    sf::RenderTexture target;
+    target.create(mapSize.x, mapSize.y);
+    draw(target);
+    target.display();
+    sf::Image img = target.getTexture().copyToImage();
+    map.setImage(img);
+    shader.setUniform("u_bw_mode", 0.0F);
 }
 
 void Island::draw(sf::RenderTarget &target) {
@@ -28,4 +38,12 @@ void Island::draw(sf::RenderTarget &target) {
     shader.setUniform("u_top_left", sf::Glsl::Vec2(target.mapPixelToCoords({0, 0})));
     shader.setUniform("u_bottom_right", sf::Glsl::Vec2(target.mapPixelToCoords(sf::Vector2i(target.getSize()))));
     target.draw(canvasS, &shader);
+}
+bool Island::Map::operator()(sf::Vector2f cord) const {
+    sf::Vector2u size = data.getSize();
+    sf::Vector2u pixel(std::round(cord.x), std::round(cord.y));
+    if (pixel.x >= size.x || pixel.y >= size.y) {
+        return false;
+    }
+    return data.getPixel(pixel.x, pixel.y) == sf::Color::Black;
 }

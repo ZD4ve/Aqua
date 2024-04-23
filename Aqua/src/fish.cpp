@@ -63,12 +63,12 @@ Fish &Fish::operator=(const Fish &rhs) {
 
 void Fish::draw(RenderTarget &target) {
     sp.setPosition(position);
-    sp.setRotation(atan2(velocity.y, velocity.x) * 180 / M_PI + 90);
+    sp.setRotation(std::atan2(velocity.y, velocity.x) * 180 / M_PI + 90);
     target.draw(sp);
 }
-bool Fish::canSee(Fish &near) const {
-    Vector2f dist = position - near.position;
-    return vision > hypotf(dist.x, dist.y);
+bool Fish::canSee(const sf::Vector2f &pos) const {
+    Vector2f dist = position - pos;
+    return vision > std::hypot(dist.x, dist.y);
 }
 Fish::~Fish() {
     for (auto &force : forces) {
