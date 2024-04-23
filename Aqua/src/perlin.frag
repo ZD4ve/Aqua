@@ -13,6 +13,9 @@ out vec4 fragColor;
 //* @endcond
 
 // Needs to be set once
+uniform vec2 u_map_size;         ///< Size of the map
+uniform float u_edge_ratio;      ///< Point where the edge starts to curve up
+
 uniform vec2 u_seed;             ///< Seed used as offset
 uniform int u_octaves;           ///< Number of patterns to sum
 uniform float u_gridSize;        ///< Size of the grid
@@ -140,12 +143,21 @@ vec4 colorFromHeight(float height) {
         }
     }
 }
+vec2 slope(vec2 pos){
+    return pos/(u_edge_ratio*u_map_size) + vec2(1);
+}
+
+float edgeCurve(vec2 pos){
+    vec4 result = vec4(slope(pos-u_map_size),slope(-pos));
+    return max(0,max(max(result.x,result.y),max(result.z,result.w)));
+}
+
 
 /**
  * @brief Main function
  */
 void main() {
     vec2 relative = mix(u_top_left, u_bottom_right, gl_FragCoord.xy/u_resolution);
-    float height = fractalNoise(relative);
+    float height = cap(fractalNoise(relative) + edgeCurve(relative));
     fragColor = colorFromHeight(height);
 } 

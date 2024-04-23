@@ -19,11 +19,11 @@ Fish *Breeder::make() {
     forces.push_back(new WaterResistanteForce(0.002));
     forces.push_back(new MinSpeedForce(10));
     forces.push_back(new MouseForce(0.5, 30, *dep.mousPos));
-    forces.push_back(new IslandForce(0.1, *dep.map));
+    forces.push_back(new IslandForce(0.15, *dep.map));
 
     for (size_t i = 0; i < opt.n_of_fishes; i++) {
         // TODO: Fish generation
-        float vis = 25;
+        float vis = 20;
         Fish fish = Fish(sf::Vector2f(std::rand() % 1000, std::rand() % 1000), forces, vis, sf::Color(std::rand() % 255, std::rand() % 255, std::rand() % 255));
         storage[i] = fish;
 

@@ -9,10 +9,12 @@ Island::Island(sf::Vector2u mapSize) : mapSize(mapSize) {
     canvasT.create(mapSize.x, mapSize.y);
     canvasS = sf::Sprite(canvasT);
     if (!shader.loadFromFile("src/perlin.frag", sf::Shader::Fragment)) throw std::runtime_error("Could not load shader!");
+    shader.setUniform("u_map_size", sf::Glsl::Vec2(mapSize));
+    shader.setUniform("u_edge_ratio", 0.15F);
     shader.setUniform("u_seed", sf::Glsl::Vec2(std::rand() % 5000 - 2500, std::rand() % 5000 - 2500));
-    shader.setUniform("u_octaves", 5);
-    shader.setUniform("u_gridSize", 500.0F);
-    shader.setUniform("u_amplitude", 2.0F);
+    shader.setUniform("u_octaves", 6);
+    shader.setUniform("u_gridSize", 200.0F);
+    shader.setUniform("u_amplitude", 1.75F);
     shader.setUniform("u_bw_mode", 0.0F);
     shader.setUniform("col_low_water", sf::Glsl::Vec4(sf::Color(0, 26, 51)));
     shader.setUniform("col_high_water", sf::Glsl::Vec4(sf::Color(0, 102, 204)));

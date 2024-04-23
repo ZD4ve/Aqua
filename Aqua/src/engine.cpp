@@ -53,7 +53,7 @@ void Engine::life() {
     }
 }
 void Engine::draw() {
-    window->clear(sf::Color(10, 44, 53));
+    window->clear(sf::Color(19, 109, 21));
 
     island->draw(*window);
     net->draw(*window);
