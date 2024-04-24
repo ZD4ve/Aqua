@@ -16,7 +16,7 @@ Fish *Breeder::make() {
     forces.push_back(new SeparationForce(0.2, 10));
     forces.push_back(new AlignmentForce(0.8));
     forces.push_back(new CohesionForce(0.8));
-    forces.push_back(new WaterResistanteForce(0.002));
+    forces.push_back(new WaterResistanteForce(0.01));
     forces.push_back(new MinSpeedForce(10));
     forces.push_back(new MouseForce(0.5, 30, *dep.mousPos));
     forces.push_back(new IslandForce(0.15, *dep.map));

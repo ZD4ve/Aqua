@@ -12,11 +12,15 @@ class Fish {
     sf::Vector2f velocity;
     std::vector<Force *> forces;
 
+    static constexpr size_t n_of_animations = 4;
     static sf::Texture *tex;
     static size_t instance_cnt;
+    void loadTexture();
 
     float vision;
     sf::Sprite sp;
+    size_t animation_state{0};
+    sf::Clock last_animation_update;
 
    public:
     Fish();

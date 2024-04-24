@@ -1,6 +1,7 @@
 #include "fish.hpp"
 
 #include <cmath>
+#include <sstream>
 
 using namespace aq;
 using namespace sf;
@@ -9,9 +10,9 @@ sf::Texture *Fish::tex = nullptr;
 size_t Fish::instance_cnt = 0;
 
 Fish::Fish() {
+    loadTexture();
     instance_cnt++;
 }
-
 Fish::Fish(sf::Vector2f pos, const std::vector<Force *> &forces, float vision, sf::Color color) : position(pos), vision(std::abs(vision)) {
     this->forces.reserve(forces.size());
     for (const auto &f : forces) {
@@ -19,15 +20,9 @@ Fish::Fish(sf::Vector2f pos, const std::vector<Force *> &forces, float vision, s
         force->setMe(this);
         this->forces.push_back(force);
     }
-    if (tex == nullptr) {
-        tex = new sf::Texture();
-        if (!tex->loadFromFile("asset/fish.png")) {
-            throw std::runtime_error("Fish texture load fail!");
-        }
-        tex->setSmooth(false);
-    }
-    sp = sf::Sprite(*tex);
-    sf::Vector2u tex_size = tex->getSize();
+    loadTexture();
+    sp = sf::Sprite(tex[0]);
+    sf::Vector2u tex_size = tex[0].getSize();
     sp.setOrigin(tex_size.x / 2.0F, tex_size.y / 2.0F);
     sp.setScale(sf::Vector2f(5.0 / tex_size.y, 5.0 / tex_size.y));
     sp.setColor(color);
@@ -60,8 +55,30 @@ Fish &Fish::operator=(const Fish &rhs) {
     }
     return *this;
 }
+void Fish::loadTexture() {
+    if (tex != nullptr) return;
+    tex = new sf::Texture[n_of_animations];
+    for (size_t i = 0; i < n_of_animations; i++) {
+        std::ostringstream path;
+        path << "asset/fish" << i << ".png";
+        if (!tex[i].loadFromFile(path.str())) {
+            throw std::runtime_error("Fish texture load failed!");
+        }
+        tex[i].generateMipmap();
+        tex[i].setSmooth(false);
+    }
+}
 
 void Fish::draw(RenderTarget &target) {
+    constexpr float max_wait = 0.5;
+    constexpr float fastest_speed = 75;
+    float threshold = max_wait - (std::hypot(velocity.x, velocity.y) * max_wait / fastest_speed);
+    if (last_animation_update.getElapsedTime().asSeconds() > threshold) {
+        last_animation_update.restart();
+        ++animation_state;
+        if (animation_state == n_of_animations) animation_state = 0;
+        sp.setTexture(tex[animation_state]);
+    }
     sp.setPosition(position);
     sp.setRotation(std::atan2(velocity.y, velocity.x) * 180 / M_PI + 90);
     target.draw(sp);
@@ -76,7 +93,7 @@ Fish::~Fish() {
     }
     --instance_cnt;
     if (instance_cnt == 0) {
-        delete tex;
+        delete[] tex;
         tex = nullptr;
     }
 }
