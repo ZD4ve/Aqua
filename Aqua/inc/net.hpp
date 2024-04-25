@@ -1,5 +1,5 @@
 #pragma once
-#include <forward_list>
+#include <list>
 #include <mutex>
 #include <vector>
 
@@ -9,7 +9,7 @@
 namespace aq {
 class Net {
    public:
-    typedef std::forward_list<Fish *> cell;
+    typedef std::list<Fish *> cell;
     class LocalisedIterator {
        private:
         const Net &net;
@@ -18,7 +18,7 @@ class Net {
         cell::iterator currEnd;
         size_t idx{0};
         sf::Vector2u currCord() const {
-            return sf::Vector2u(centerCord.x + (idx % 3), centerCord.y + (idx / 3));
+            return sf::Vector2u(centerCord.x + (idx % 3) - 1, centerCord.y + (idx / 3) - 1);
         }
         void updateIters() {
             currIter = net.grid[currCord().x + 1][currCord().y + 1].begin();
@@ -50,20 +50,20 @@ class Net {
             operator++();
             return tmp;
         }
-        bool operator==(const LocalisedIterator &rhs) {
-            return currIter == rhs.currIter;
+        bool operator!=(const LocalisedIterator &rhs) {
+            return currIter != rhs.currIter;
         }
     };
 
    private:
-    size_t fish_cnt;
+    const size_t fish_cnt;
     Fish *storage;
     cell **grid;
-    size_t mapSize;
+    const size_t mapSize;
     double cellSize;
+    size_t cellCnt;
     sf::Clock lastUpdate;
     std::mutex working;
-    size_t cellCnt() const { return mapSize / cellSize; }
     sf::Vector2u getCord(const Fish &fish) const;
 
     LocalisedIterator begin(const Fish &centerFish) const;
