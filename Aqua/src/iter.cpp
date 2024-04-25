@@ -2,7 +2,7 @@
 
 using namespace aq;
 
-Net::LocalisedIterator::LocalisedIterator(const Net &net, const Fish &centerFish) : net(net), centerCord(net.getCord(centerFish)) {
+Net::LocalisedIterator::LocalisedIterator(Net &net, const Fish &centerFish) : net(net), centerCord(net.getCord(centerFish)) {
     updateIters();
     while (currIter == currEnd) {
         idx++;

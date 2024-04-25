@@ -12,24 +12,24 @@ class Net {
     typedef std::list<Fish *> cell;
     class LocalisedIterator {
        private:
-        const Net &net;
-        const sf::Vector2u centerCord;
+        Net &net;
+        const sf::Vector2i centerCord;
         cell::iterator currIter;
         cell::iterator currEnd;
         size_t idx{0};
-        sf::Vector2u currCord() const {
-            return sf::Vector2u(centerCord.x + (idx % 3) - 1, centerCord.y + (idx / 3) - 1);
+        sf::Vector2i currCord() const {
+            return sf::Vector2i(centerCord.x + (idx % 3) - 1, centerCord.y + (idx / 3) - 1);
         }
         void updateIters() {
-            currIter = net.grid[currCord().x + 1][currCord().y + 1].begin();
-            currEnd = net.grid[currCord().x + 1][currCord().y + 1].end();
+            currIter = net.at(currCord()).begin();
+            currEnd = net.at(currCord()).end();
         }
         bool atEnd() const {
             return idx == 9;
         }
 
        public:
-        LocalisedIterator(const Net &net, const Fish &centerFish);
+        LocalisedIterator(Net &net, const Fish &centerFish);
         void gotoEnd() {
             idx = 8;
             updateIters();
@@ -64,10 +64,11 @@ class Net {
     size_t cellCnt;
     sf::Clock lastUpdate;
     std::mutex working;
-    sf::Vector2u getCord(const Fish &fish) const;
+    sf::Vector2i getCord(const Fish &fish) const;
+    cell &at(sf::Vector2i cord);
 
-    LocalisedIterator begin(const Fish &centerFish) const;
-    LocalisedIterator end(const Fish &centerFish) const;
+    LocalisedIterator begin(const Fish &centerFish);
+    LocalisedIterator end(const Fish &centerFish);
 
    public:
     explicit Net(Breeder breeder, size_t mapSize = 1000);
