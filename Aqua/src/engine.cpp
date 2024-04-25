@@ -2,12 +2,13 @@
 
 #include <SFML/Graphics.hpp>
 #include <atomic>
+#include <cfenv>
 #include <thread>
 
 using namespace aq;
 using namespace std::chrono;
 
-Engine::Engine(vec window_size, unsigned int seed) : endLife(true) {
+Engine::Engine(vec window_size, size_t fish_number, unsigned int seed) : endLife(true) {
     std::srand(seed);
 
     sf::ContextSettings win_settings;
@@ -15,14 +16,15 @@ Engine::Engine(vec window_size, unsigned int seed) : endLife(true) {
     win_settings.majorVersion = 3;
     win_settings.minorVersion = 2;
     sf::VideoMode win_size = sf::VideoMode(window_size.x, window_size.y);
-    window = new sf::RenderWindow(win_size, "Aqua by ZDave!", sf::Style::Default, win_settings);
-    window->setVerticalSyncEnabled(false);
+    window = new sf::RenderWindow(win_size, "Aqua by ZDave", sf::Style::Default, win_settings);
+    window->setVerticalSyncEnabled(true);
     window->setFramerateLimit(0);
 
     island = new Island(vec(1000, 1000));
 
     Breeder::Settings fish_settings;
-    fish_settings.n_of_fishes = 500;
+    fish_settings.n_of_fishes = fish_number;
+    fish_settings.mapSize = island->getMapSize();
     Breeder::Dependency dependencies;
     dependencies.map = &island->getMap();
     dependencies.mousPos = &mousePosition;

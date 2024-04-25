@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <atomic>
 #include <vector>
 
 #include "force.hpp"
@@ -12,6 +13,7 @@ class Fish {
     vec position;
     vec velocity;
     std::vector<Force *> forces;
+    std::atomic_bool dead{false};
 
     static constexpr size_t n_of_animations = 4;
     static sf::Texture *tex;
@@ -50,6 +52,8 @@ class Fish {
             force->finalize();
             velocity += force->getSum() * deltaT.asSeconds();
         }
+        vec delta = velocity * deltaT.asSeconds();
+        if (delta.len() > vision) delta = delta.norm() * vision;
         position += velocity * deltaT.asSeconds();
     }
     ~Fish();

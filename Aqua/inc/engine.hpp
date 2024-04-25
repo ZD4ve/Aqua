@@ -23,7 +23,7 @@ class Engine {
     void life();
 
    public:
-    explicit Engine(vec window_size, unsigned int seed);
+    explicit Engine(vec window_size, size_t fish_number, unsigned int seed);
     void draw();
     void startParalellLife();
     void stopParalellLife();

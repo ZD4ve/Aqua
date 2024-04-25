@@ -7,6 +7,8 @@
 #include "fish.hpp"
 #include "vec.hpp"
 
+// #define PARAL
+
 namespace aq {
 class Net {
    public:
@@ -25,9 +27,6 @@ class Net {
             currIter = net.at(currCord()).begin();
             currEnd = net.at(currCord()).end();
         }
-        bool atEnd() const {
-            return idx == 9;
-        }
 
        public:
         LocalisedIterator(Net &net, const Fish &centerFish);
@@ -35,14 +34,11 @@ class Net {
             idx = 8;
             updateIters();
             currIter = currEnd;
-            idx++;
         }
         Fish &operator*() {
-            if (idx == 9) throw std::out_of_range("Iter already at end!");
             return **currIter;
         }
         Fish *operator->() {
-            if (atEnd()) throw std::out_of_range("Iter already at end!");
             return *currIter;
         }
         LocalisedIterator &operator++();
@@ -59,12 +55,12 @@ class Net {
    private:
     const size_t fish_cnt;
     Fish *storage;
-    cell **grid;
     const size_t mapSize;
-    double cellSize;
-    size_t cellCnt;
     sf::Clock lastUpdate;
     std::mutex working;
+    cell **grid;
+    double cellSize;
+    size_t cellCnt;
     vec getCord(const Fish &fish) const;
     cell &at(vec cord);
 

@@ -11,11 +11,10 @@ Net::LocalisedIterator::LocalisedIterator(Net &net, const Fish &centerFish) : ne
 }
 
 Net::LocalisedIterator &Net::LocalisedIterator::operator++() {
-    if (atEnd()) throw std::out_of_range("Iter already at end!");
     currIter++;
     while (currIter == currEnd) {
         idx++;
-        if (atEnd()) return *this;
+        if (idx == 9) return *this;
         updateIters();
     }
     return *this;

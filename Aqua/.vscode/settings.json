@@ -96,7 +96,8 @@
         "climits": "cpp",
         "ios": "cpp",
         "locale": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "cfenv": "cpp"
     },
     "editor.formatOnSave": true,
     "cmake.configureOnOpen": true

@@ -13,7 +13,7 @@ Breeder::Breeder(Settings fishSettings, Dependency forceDependecies) : opt(fishS
 Fish *Breeder::make() {
     Fish *storage = new Fish[opt.n_of_fishes];
     std::vector<Force *> forces;
-    forces.push_back(new SeparationForce(0.2, 10));
+    forces.push_back(new SeparationForce(0.2, 7));
     forces.push_back(new AlignmentForce(0.8));
     forces.push_back(new CohesionForce(0.8));
     forces.push_back(new WaterResistanteForce(0.01));
@@ -24,7 +24,13 @@ Fish *Breeder::make() {
     for (size_t i = 0; i < opt.n_of_fishes; i++) {
         // TODO: Fish generation
         float vis = 20;
-        Fish fish = Fish(vec(std::rand() % 500, std::rand() % 500) + vec(250, 250), forces, vis, sf::Color(std::rand() % 255, std::rand() % 255, std::rand() % 255));
+        vec pos;
+        do {
+            pos.x = std::rand() % static_cast<size_t>(opt.mapSize.x);
+            pos.y = std::rand() % static_cast<size_t>(opt.mapSize.y);
+        } while (!dep.map->operator()(pos));
+
+        Fish fish = Fish(pos, forces, vis, sf::Color(std::rand() % 255, std::rand() % 255, std::rand() % 255));
         storage[i] = fish;
 
         if (max_vision < vis) max_vision = vis;

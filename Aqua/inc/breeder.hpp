@@ -13,6 +13,7 @@ class Breeder {
         size_t n_of_fishes = 100;
         size_t n_of_species = 1;
         size_t randomness_pct = 0;
+        vec mapSize;
     };
     struct Dependency {
         const Island::Map *map;

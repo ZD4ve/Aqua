@@ -23,7 +23,7 @@ Fish::Fish(vec pos, const std::vector<Force *> &forces, float vision, sf::Color 
     loadTexture();
     sp = sf::Sprite(tex[0]);
     vec tex_size = tex[0].getSize();
-    sp.setOrigin(tex_size.x / 2.0F, tex_size.y / 2.0F);
+    sp.setOrigin(tex_size.x / 2.0, tex_size.y / 2.0);
     sp.setScale(vec(5.0 / tex_size.y, 5.0 / tex_size.y));
     sp.setColor(color);
     ++instance_cnt;
@@ -70,8 +70,8 @@ void Fish::loadTexture() {
 }
 
 void Fish::draw(RenderTarget &target) {
-    constexpr float max_wait = 0.5;
-    constexpr float fastest_speed = 75;
+    constexpr float max_wait = 0.35;
+    constexpr float fastest_speed = 30;
     float threshold = max_wait - (std::hypot(velocity.x, velocity.y) * max_wait / fastest_speed);
     if (last_animation_update.getElapsedTime().asSeconds() > threshold) {
         last_animation_update.restart();
