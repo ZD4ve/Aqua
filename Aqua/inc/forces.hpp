@@ -3,16 +3,9 @@
 
 #include "force.hpp"
 #include "island.hpp"
+#include "vec.hpp"
 
 namespace {
-inline float lenght(sf::Vector2f v) {
-    return std::hypot(v.x, v.y);
-}
-inline sf::Vector2f normalize(sf::Vector2f v) {
-    float len = lenght(v);
-    if (len < 0.00001) return sf::Vector2f(std::sin(std::rand() / 1000.0), std::cos(std::rand() / 1000.0));
-    return sf::Vector2f(v.x / len, v.y / len);
-}
 inline float square(float x) {
     return x * x;
 }
@@ -30,8 +23,8 @@ class SeparationForce : public Force {
    public:
     explicit SeparationForce(float weight, float safe_distance) : Force(weight), safeDist(safe_distance){};
     virtual void accum(Fish &near) {
-        sf::Vector2f diff = near.getLocation() - me->getLocation();
-        float dist = lenght(diff);
+        vec diff = near.getLocation() - me->getLocation();
+        float dist = diff.len();
         if (dist < safeDist) sum -= diff * square(safeDist - dist);
     }
     virtual void finalize() {}
@@ -75,7 +68,7 @@ class CohesionForce : public Force {
    public:
     explicit CohesionForce(float weight) : Force(weight){};
     virtual void accum(Fish &near) {
-        sf::Vector2f diff = near.getLocation() - me->getLocation();
+        vec diff = near.getLocation() - me->getLocation();
         sum += diff;
         ++n_of_close;
     }
@@ -100,8 +93,8 @@ class WaterResistanteForce : public Force {
         (void)near;
     }
     virtual void finalize() {
-        sf::Vector2f v = me->getVelocity();
-        sum -= sf::Vector2f(square_signed(v.x), square_signed(v.y));
+        vec v = me->getVelocity();
+        sum -= vec(square_signed(v.x), square_signed(v.y));
     }
     virtual ~WaterResistanteForce() {}
     virtual Force *clone() {
@@ -118,9 +111,9 @@ class MinSpeedForce : public Force {
         (void)near;
     }
     virtual void finalize() {
-        sf::Vector2f v = me->getVelocity();
-        if (lenght(v) < weight) {
-            sum += normalize(v);
+        vec v = me->getVelocity();
+        if (v.len() < weight) {
+            sum += v.norm();
         }
     }
     virtual ~MinSpeedForce() {}
@@ -142,10 +135,10 @@ class MouseForce : public Force {
         (void)near;
     }
     virtual void finalize() {
-        sf::Vector2f mouse = mousePosition.load();
-        if (mouse == sf::Vector2f(0, 0)) return;
-        sf::Vector2f diff = mouse - me->getLocation();
-        float dist = lenght(diff);
+        vec mouse = mousePosition.load();
+        if (mouse == vec(0, 0)) return;
+        vec diff = mouse - me->getLocation();
+        float dist = diff.len();
         if (dist < fearDist) sum -= diff * (fearDist - dist);
     }
     virtual Force *clone() {
@@ -172,12 +165,12 @@ class IslandForce : public Force {
     }
     virtual void finalize() {
         float vis = me->getVision();
-        sf::Vector2f loc = me->getLocation();
+        vec loc = me->getLocation();
         for (size_t i = 0; i < nOfSamplePoints; i++) {
-            sf::Vector2f sample(samplePoints[i].x, samplePoints[i].y);
-            sf::Vector2f offset = sample * vis;
+            vec sample(samplePoints[i].x, samplePoints[i].y);
+            vec offset = sample * vis;
             if (map(loc + offset)) continue;
-            sum -= offset / square(lenght(sample));
+            sum -= offset / square(sample.len());
         }
     }
     virtual Force *clone() {

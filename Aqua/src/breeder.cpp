@@ -6,7 +6,7 @@ using namespace aq;
 
 Breeder::Breeder(Settings fishSettings, Dependency forceDependecies) : opt(fishSettings), dep(forceDependecies) {
     if (!dep.isSet()) {
-        throw std::logic_error("Forces dependencies hasnt been set correctly!");
+        throw std::logic_error("Force dependencies hasnt been set correctly!");
     }
 }
 
@@ -24,7 +24,7 @@ Fish *Breeder::make() {
     for (size_t i = 0; i < opt.n_of_fishes; i++) {
         // TODO: Fish generation
         float vis = 20;
-        Fish fish = Fish(sf::Vector2f(std::rand() % 1000, std::rand() % 1000), forces, vis, sf::Color(std::rand() % 255, std::rand() % 255, std::rand() % 255));
+        Fish fish = Fish(vec(std::rand() % 500, std::rand() % 500) + vec(250, 250), forces, vis, sf::Color(std::rand() % 255, std::rand() % 255, std::rand() % 255));
         storage[i] = fish;
 
         if (max_vision < vis) max_vision = vis;

@@ -13,7 +13,7 @@ Fish::Fish() {
     loadTexture();
     instance_cnt++;
 }
-Fish::Fish(sf::Vector2f pos, const std::vector<Force *> &forces, float vision, sf::Color color) : position(pos), vision(std::abs(vision)) {
+Fish::Fish(vec pos, const std::vector<Force *> &forces, float vision, sf::Color color) : position(pos), vision(std::abs(vision)) {
     this->forces.reserve(forces.size());
     for (const auto &f : forces) {
         Force *force = f->clone();
@@ -22,9 +22,9 @@ Fish::Fish(sf::Vector2f pos, const std::vector<Force *> &forces, float vision, s
     }
     loadTexture();
     sp = sf::Sprite(tex[0]);
-    sf::Vector2u tex_size = tex[0].getSize();
+    vec tex_size = tex[0].getSize();
     sp.setOrigin(tex_size.x / 2.0F, tex_size.y / 2.0F);
-    sp.setScale(sf::Vector2f(5.0 / tex_size.y, 5.0 / tex_size.y));
+    sp.setScale(vec(5.0 / tex_size.y, 5.0 / tex_size.y));
     sp.setColor(color);
     ++instance_cnt;
 }
@@ -83,7 +83,7 @@ void Fish::draw(RenderTarget &target) {
     sp.setRotation(std::atan2(velocity.y, velocity.x) * 180 / M_PI + 90);
     target.draw(sp);
 }
-bool Fish::canSee(const sf::Vector2f &pos) const {
+bool Fish::canSee(const vec &pos) const {
     Vector2f dist = position - pos;
     return vision > std::hypot(dist.x, dist.y);
 }

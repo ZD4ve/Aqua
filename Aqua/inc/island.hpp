@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+#include "vec.hpp"
+
 namespace aq {
 
 class Island {
@@ -20,21 +22,21 @@ class Island {
          * @param cord cord on map
          * @return true if water, false is island
          */
-        bool operator()(sf::Vector2f cord) const;
+        bool operator()(vec cord) const;
     };
 
    private:
     sf::Sprite canvasS;
     sf::Texture canvasT;
     sf::Shader shader;
-    sf::Vector2u mapSize;
+    vec mapSize;
     Map map;
 
    public:
-    explicit Island(sf::Vector2u mapSize);
+    explicit Island(vec mapSize);
     void draw(sf::RenderTarget &target);
     const Map &getMap() { return map; }
-    sf::Vector2u getMapSize() { return mapSize; }
+    vec getMapSize() { return mapSize; }
 };
 
 }  // namespace aq

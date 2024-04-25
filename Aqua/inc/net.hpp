@@ -5,6 +5,7 @@
 
 #include "breeder.hpp"
 #include "fish.hpp"
+#include "vec.hpp"
 
 namespace aq {
 class Net {
@@ -13,12 +14,12 @@ class Net {
     class LocalisedIterator {
        private:
         Net &net;
-        const sf::Vector2i centerCord;
+        const vec centerCord;
         cell::iterator currIter;
         cell::iterator currEnd;
         size_t idx{0};
-        sf::Vector2i currCord() const {
-            return sf::Vector2i(centerCord.x + (idx % 3) - 1, centerCord.y + (idx / 3) - 1);
+        vec currCord() const {
+            return vec(centerCord.x + (idx % 3) - 1, centerCord.y + (idx / 3) - 1);
         }
         void updateIters() {
             currIter = net.at(currCord()).begin();
@@ -64,8 +65,8 @@ class Net {
     size_t cellCnt;
     sf::Clock lastUpdate;
     std::mutex working;
-    sf::Vector2i getCord(const Fish &fish) const;
-    cell &at(sf::Vector2i cord);
+    vec getCord(const Fish &fish) const;
+    cell &at(vec cord);
 
     LocalisedIterator begin(const Fish &centerFish);
     LocalisedIterator end(const Fish &centerFish);

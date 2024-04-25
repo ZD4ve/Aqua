@@ -4,7 +4,7 @@
 
 using namespace aq;
 
-Island::Island(sf::Vector2u mapSize) : mapSize(mapSize) {
+Island::Island(vec mapSize) : mapSize(mapSize) {
     if (!sf::Shader::isAvailable()) throw std::runtime_error("Shaders are not available on this machine!");
     canvasT.create(mapSize.x, mapSize.y);
     canvasS = sf::Sprite(canvasT);
@@ -38,13 +38,13 @@ Island::Island(sf::Vector2u mapSize) : mapSize(mapSize) {
 void Island::draw(sf::RenderTarget &target) {
     shader.setUniform("u_resolution", sf::Glsl::Vec2(target.getSize()));
     shader.setUniform("u_top_left", sf::Glsl::Vec2(target.mapPixelToCoords({0, 0})));
-    shader.setUniform("u_bottom_right", sf::Glsl::Vec2(target.mapPixelToCoords(sf::Vector2i(target.getSize()))));
+    shader.setUniform("u_bottom_right", sf::Glsl::Vec2(target.mapPixelToCoords(vec(target.getSize()))));
     target.draw(canvasS, &shader);
 }
-bool Island::Map::operator()(sf::Vector2f cord) const {
-    sf::Vector2u size = data.getSize();
-    sf::Vector2u pixel(std::round(cord.x), std::round(cord.y));
-    if (pixel.x >= size.x || pixel.y >= size.y) {
+bool Island::Map::operator()(vec cord) const {
+    vec size = data.getSize();
+    vec pixel(std::round(cord.x), std::round(cord.y));
+    if (pixel.x >= size.x || pixel.y >= size.y || pixel.x < 0 || pixel.y < 0) {
         return false;
     }
     return data.getPixel(pixel.x, pixel.y) == sf::Color::Black;

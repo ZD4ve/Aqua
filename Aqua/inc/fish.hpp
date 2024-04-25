@@ -3,13 +3,14 @@
 #include <vector>
 
 #include "force.hpp"
+#include "vec.hpp"
 
 namespace aq {
 
 class Fish {
    private:
-    sf::Vector2f position;
-    sf::Vector2f velocity;
+    vec position;
+    vec velocity;
     std::vector<Force *> forces;
 
     static constexpr size_t n_of_animations = 4;
@@ -24,12 +25,12 @@ class Fish {
 
    public:
     Fish();
-    Fish(sf::Vector2f pos, const std::vector<Force *> &forces, float vision, sf::Color color);
+    Fish(vec pos, const std::vector<Force *> &forces, float vision, sf::Color color);
     Fish(const Fish &rhs);
     Fish &operator=(const Fish &rhs);
-    sf::Vector2f getLocation() const { return position; }
-    sf::Vector2f getVelocity() const { return velocity; }
-    bool canSee(const sf::Vector2f &pos) const;
+    vec getLocation() const { return position; }
+    vec getVelocity() const { return velocity; }
+    bool canSee(const vec &pos) const;
     bool canSee(Fish &near) const {
         return canSee(near.position);
     }

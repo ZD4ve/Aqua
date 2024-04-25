@@ -2,15 +2,14 @@
 #include <force.hpp>
 
 using namespace aq;
-using sf::Vector2f;
 
 void Force::setMe(Fish *me) {
     if (this->me != nullptr && me != nullptr) throw std::logic_error("Already assigned fish to force!");
     this->me = me;
 }
 
-Vector2f Force::getSum() {
-    Vector2f tmp = sum;
-    sum = Vector2f(0, 0);
+vec Force::getSum() {
+    vec tmp = sum;
+    sum = vec(0, 0);
     return tmp * weight;
 }

@@ -1,16 +1,17 @@
 #include "net.hpp"
 
-#include <SFML/Graphics.hpp>
 #include <cmath>
 
 using namespace aq;
 using namespace std::chrono;
 
+// #define PARAL
+
 Net::Net(Breeder breeder, size_t mapSize) : fish_cnt(breeder.getCnt()), mapSize(mapSize) {
     storage = breeder.make();
-    size_t cnt = std::floor(mapSize / breeder.getMaxVision());
+    size_t cnt = std::floor(mapSize / breeder.getMaxVision()) / 3;
     if (cnt == 0) throw std::logic_error("Fish see farther than map size!");
-    cellSize = mapSize / static_cast<double>(cnt);
+    cellSize = mapSize / static_cast<float>(cnt);
     cellCnt = mapSize / cellSize;
     grid = new Net::cell *[cellCnt + 2];
     grid[0] = new Net::cell[(cellCnt + 2) * (cellCnt + 2)];
@@ -18,20 +19,61 @@ Net::Net(Breeder breeder, size_t mapSize) : fish_cnt(breeder.getCnt()), mapSize(
         grid[i] = grid[i - 1] + cellCnt + 2;
     }
     for (size_t i = 0; i < fish_cnt; i++) {
-        Fish &fish = storage[i];
-        at(getCord(fish)).emplace_front(&fish);
+        at(getCord(storage[i])).push_back(&storage[i]);
     }
 }
 
+void Net::moveFish() {
+    working.lock();
+    sf::Time deltaT = lastUpdate.restart();
+
+#ifdef PARAL
+    // #pragma omp parallel
+    for (size_t j = 0; j < 9; j++) {
+        // #pragma omp for
+        for (size_t i = j; i < cellCnt * cellCnt; i += 9) {
+            vec cord(i % cellCnt, i / cellCnt);
+
+            cell current_cell = at(cord);
+            for (cell::iterator iter = current_cell.begin(); iter != current_cell.end();) {
+                Fish &fish = **iter;
+
+                fish.move(deltaT, begin(fish), end(fish));
+
+                vec new_cord = getCord(fish);
+                if (!new_cord.wholeEQ(cord)) {
+                    at(new_cord).push_back(*iter);
+                    iter = current_cell.erase(iter);
+                } else {
+                    ++iter;
+                }
+            }
+        }
+    }
+#endif
+#ifndef PARAL
+    for (size_t i = 0; i < fish_cnt; i++) {
+        storage[i].move(deltaT, storage, storage + fish_cnt);
+    }
+#endif
+    working.unlock();
+}
+void Net::draw(sf::RenderTarget &target) {
+    working.lock();
+    for (size_t i = 0; i < fish_cnt; i++) {
+        storage[i].draw(target);
+    }
+    working.unlock();
+}
 Net::~Net() {
     delete[] storage;
     delete[] grid[0];
     delete[] grid;
 }
 
-sf::Vector2i Net::getCord(const Fish &fish) const {
-    sf::Vector2f loc = fish.getLocation();
-    return sf::Vector2i(loc.x / cellSize, loc.y / cellSize);
+vec Net::getCord(const Fish &fish) const {
+    vec loc = fish.getLocation();
+    return loc / cellSize;
 }
 
 Net::LocalisedIterator Net::begin(const Fish &centerFish) {
@@ -42,52 +84,11 @@ Net::LocalisedIterator Net::end(const Fish &centerFish) {
     iter.gotoEnd();
     return iter;
 }
-
-void Net::draw(sf::RenderTarget &target) {
-    working.lock();
-    for (size_t i = 0; i < fish_cnt; i++) {
-        storage[i].draw(target);
-    }
-    working.unlock();
-}
-Net::cell &Net::at(sf::Vector2i cord) {
-    if (cord.x < -1 || cord.y < -1 || cord.x > static_cast<int>(cellCnt) || cord.y > static_cast<int>(cellCnt)) {
+Net::cell &Net::at(vec cord) {
+    int x = std::floor(cord.x);
+    int y = std::floor(cord.y);
+    if (x < -1 || y < -1 || x > static_cast<int>(cellCnt) || y > static_cast<int>(cellCnt)) {
         throw std::out_of_range("Indexing out of grid!");
     }
-    return grid[cord.x + 1][cord.y + 1];
-}
-
-void Net::moveFish() {
-    working.lock();
-    sf::Time deltaT = lastUpdate.restart();
-    // TODO: paralell with localIter
-
-    // #pragma omp parallel
-    for (size_t j = 0; j < 9; j++) {
-        // #pragma omp for
-        for (size_t i = j; i < cellCnt * cellCnt; i += 9) {
-            sf::Vector2i cord(i % cellCnt, i / cellCnt);
-
-            cell current_cell = at(cord);
-            cell::iterator iter = current_cell.begin();
-            while (iter != current_cell.end()) {
-                Fish &fish = **iter;
-                fish.move(deltaT, begin(fish), end(fish));
-                sf::Vector2i new_cord = getCord(fish);
-                if (new_cord != cord) {
-                    at(new_cord).push_back(*iter);
-                    current_cell.erase(iter++);
-                } else {
-                    ++iter;
-                }
-            }
-        }
-    }
-
-    /*
-    for (size_t i = 0; i < fish_cnt; i++) {
-        storage[i].move(deltaT, storage, storage + fish_cnt);
-    }
-    */
-    working.unlock();
+    return grid[x + 1][y + 1];
 }

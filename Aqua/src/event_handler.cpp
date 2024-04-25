@@ -7,7 +7,7 @@ void Engine::handeEvents() {
     static bool right_mouse_down = false;
     static bool left_mouse_down = false;
 
-    static sf::Vector2i last_pos;
+    static vec last_pos;
 
     for (sf::Event event{}; window->pollEvent(event);) {
         using sf::Event;
@@ -20,15 +20,15 @@ void Engine::handeEvents() {
             case Event::MouseButtonReleased: {
                 right_mouse_down = sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
                 left_mouse_down = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
-                //if(left_mouse_down) mousePosition = left_mouse_down ? current_pixel : sf::Vector2f(0, 0);
+                // if(left_mouse_down) mousePosition = left_mouse_down ? current_pixel : vec(0, 0);
 
                 break;
             }
             case Event::MouseMoved: {
-                sf::Vector2i current_pos = {event.mouseMove.x, event.mouseMove.y};
+                vec current_pos(event.mouseMove.x, event.mouseMove.y);
                 sf::View view = window->getView();
-                sf::Vector2f current_pixel = window->mapPixelToCoords(current_pos);
-                mousePosition = left_mouse_down ? current_pixel : sf::Vector2f(0, 0);
+                vec current_pixel = window->mapPixelToCoords(current_pos);
+                mousePosition = left_mouse_down ? current_pixel : vec(0, 0);
                 if (right_mouse_down) {
                     view.move(window->mapPixelToCoords(last_pos) - current_pixel);
                     window->setView(view);
@@ -37,7 +37,7 @@ void Engine::handeEvents() {
                 break;
             }
             case Event::MouseWheelScrolled: {
-                zoomViewAt({event.mouseWheelScroll.x, event.mouseWheelScroll.y}, event.mouseWheelScroll.delta < 0);
+                zoomViewAt(vec(event.mouseWheelScroll.x, event.mouseWheelScroll.y), event.mouseWheelScroll.delta < 0);
                 break;
             }
             case Event::KeyPressed: {

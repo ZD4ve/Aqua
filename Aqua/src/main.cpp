@@ -1,9 +1,9 @@
-#include <SFML/Graphics.hpp>
 #include <chrono>
 #include <iomanip>
 #include <iostream>
 
 #include "engine.hpp"
+#include "vec.hpp"
 
 using namespace std::chrono;
 
@@ -17,7 +17,7 @@ inline double FPS(nanoseconds dt) {
 constexpr double alpha = 0.1;
 
 int main() {
-    aq::Engine eng(sf::Vector2u(1920, 1080), std::time(nullptr));
+    aq::Engine eng(vec(1920, 1080), /* std::time(nullptr)*/ 0);
 
     eng.startParalellLife();
 
