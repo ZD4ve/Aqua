@@ -14,7 +14,9 @@
             "type": "shell",
             "label": "Sync to mnt",
             "command": "bash ../win_sync.sh",
-            "problemMatcher": [],
+            "runOptions": {
+                "runOn": "folderOpen",
+            }
         }
     ]
 }
