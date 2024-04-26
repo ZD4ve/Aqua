@@ -28,10 +28,22 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         PRIVATE
             -fsanitize=address
             -fno-omit-frame-pointer
+            -Og
     )
     target_link_options(${PROJECT_NAME}
         PRIVATE
             -fsanitize=address
+    )
+endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_options(${PROJECT_NAME}
+        PRIVATE
+            -Ofast
+    )
+    target_link_options(${PROJECT_NAME}
+        PRIVATE
+            -Ofast
     )
 endif()
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)

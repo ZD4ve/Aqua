@@ -71,7 +71,7 @@ class Net {
     explicit Net(Breeder breeder, size_t mapSize = 1000);
 
     void draw(sf::RenderTarget &target);
-    void moveFish();
+    void moveFishWhile(std::atomic_bool &live);
 
     ~Net();
 };

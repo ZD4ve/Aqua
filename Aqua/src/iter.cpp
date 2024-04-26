@@ -6,6 +6,7 @@ Net::LocalisedIterator::LocalisedIterator(Net &net, const Fish &centerFish) : ne
     updateIters();
     while (currIter == currEnd) {
         idx++;
+        if (idx >= 9) return;
         updateIters();
     }
 }
@@ -14,7 +15,7 @@ Net::LocalisedIterator &Net::LocalisedIterator::operator++() {
     currIter++;
     while (currIter == currEnd) {
         idx++;
-        if (idx == 9) return *this;
+        if (idx >= 9) return *this;
         updateIters();
     }
     return *this;

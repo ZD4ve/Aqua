@@ -2,13 +2,12 @@
 
 #include <SFML/Graphics.hpp>
 #include <atomic>
-#include <cfenv>
 #include <thread>
 
 using namespace aq;
 using namespace std::chrono;
 
-Engine::Engine(vec window_size, size_t fish_number, unsigned int seed) : endLife(true) {
+Engine::Engine(vec window_size, size_t fish_number, unsigned int seed) {
     std::srand(seed);
 
     sf::ContextSettings win_settings;
@@ -32,27 +31,21 @@ Engine::Engine(vec window_size, size_t fish_number, unsigned int seed) : endLife
 }
 
 Engine::~Engine() {
-    if (!endLife) stopParalellLife();
+    if (live) stopParalellLife();
     window->close();
     delete window;
     delete net;
     delete island;
 }
 void Engine::startParalellLife() {
-    if (!endLife) throw std::logic_error("Life already running!");
-    endLife = false;
-    bgLife = std::thread(&Engine::life, this);
+    if (live) throw std::logic_error("Life already running!");
+    live = true;
+    bgLife = std::thread(&Net::moveFishWhile, this->net, std::ref(live));
 }
 void Engine::stopParalellLife() {
-    if (endLife) throw std::logic_error("Life already stopped!");
-    endLife = true;
+    if (!live) throw std::logic_error("Life already stopped!");
+    live = false;
     bgLife.join();
-}
-void Engine::life() {
-    while (!endLife) {
-        net->moveFish();
-        std::this_thread::sleep_for(1ns);
-    }
 }
 void Engine::draw() {
     window->clear(sf::Color(19, 109, 21));

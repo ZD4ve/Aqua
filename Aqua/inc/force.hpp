@@ -7,7 +7,7 @@ class Fish;
 
 class Force {
    protected:
-    Fish *me{nullptr};
+    const Fish *me{nullptr};
     vec sum{0, 0};
     float weight;
 
@@ -15,7 +15,7 @@ class Force {
     explicit Force(float weight) : weight(weight){};
     void setMe(Fish *me);
     vec getSum();
-    virtual void accum(Fish &near) = 0;
+    virtual void accum(const Fish &near) = 0;
     virtual void finalize() = 0;
     virtual ~Force(){};
     virtual Force *clone() = 0;

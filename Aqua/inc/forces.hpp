@@ -22,7 +22,7 @@ class SeparationForce : public Force {
 
    public:
     explicit SeparationForce(float weight, float safe_distance) : Force(weight), safeDist(safe_distance){};
-    virtual void accum(Fish &near) {
+    virtual void accum(const Fish &near) {
         vec diff = near.getLocation() - me->getLocation();
         float dist = diff.len();
         if (dist < safeDist) sum -= diff * square(safeDist - dist);
@@ -42,7 +42,7 @@ class AlignmentForce : public Force {
 
    public:
     explicit AlignmentForce(float weight) : Force(weight){};
-    virtual void accum(Fish &near) {
+    virtual void accum(const Fish &near) {
         sum += near.getVelocity();
         ++n_of_close;
     }
@@ -67,7 +67,7 @@ class CohesionForce : public Force {
 
    public:
     explicit CohesionForce(float weight) : Force(weight){};
-    virtual void accum(Fish &near) {
+    virtual void accum(const Fish &near) {
         vec diff = near.getLocation() - me->getLocation();
         sum += diff;
         ++n_of_close;
@@ -89,7 +89,7 @@ class CohesionForce : public Force {
 class WaterResistanteForce : public Force {
    public:
     explicit WaterResistanteForce(float weight) : Force(weight){};
-    virtual void accum(Fish &near) {
+    virtual void accum(const Fish &near) {
         (void)near;
     }
     virtual void finalize() {
@@ -107,7 +107,7 @@ class WaterResistanteForce : public Force {
 class MinSpeedForce : public Force {
    public:
     explicit MinSpeedForce(float weight) : Force(weight){};
-    virtual void accum(Fish &near) {
+    virtual void accum(const Fish &near) {
         (void)near;
     }
     virtual void finalize() {
@@ -131,7 +131,7 @@ class MouseForce : public Force {
 
    public:
     explicit MouseForce(float weight, float fear_distance, const std::atomic<sf::Vector2f> &mouse_position) : Force(weight), fearDist(fear_distance), mousePosition(mouse_position){};
-    virtual void accum(Fish &near) {
+    virtual void accum(const Fish &near) {
         (void)near;
     }
     virtual void finalize() {
@@ -160,7 +160,7 @@ class IslandForce : public Force {
 
    public:
     explicit IslandForce(float weight, const Island::Map &map) : Force(weight), map(map){};
-    virtual void accum(Fish &near) {
+    virtual void accum(const Fish &near) {
         (void)near;
     }
     virtual void finalize() {

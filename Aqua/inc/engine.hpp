@@ -14,13 +14,12 @@ class Engine {
     sf::RenderWindow *window;
     Net *net;
     Island *island;
-    std::atomic_bool endLife;
+    std::atomic_bool live{false};
     const float zoomAmount = 1.3F;
     std::thread bgLife;
     std::atomic<sf::Vector2f> mousePosition;
     void zoomViewAt(vec pixel, bool in);
     void resetView();
-    void life();
 
    public:
     explicit Engine(vec window_size, size_t fish_number, unsigned int seed);
