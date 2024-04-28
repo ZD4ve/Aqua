@@ -7,8 +7,6 @@
 #include "fish.hpp"
 #include "vec.hpp"
 
-// #define PARAL
-
 namespace aq {
 class Net {
    public:

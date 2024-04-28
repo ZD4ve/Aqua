@@ -1,10 +1,10 @@
 #include "net.hpp"
 
-#include <omp.h>
-
 #include <atomic>
 #include <cmath>
 #include <thread>
+
+//#include <omp.h>
 
 using namespace aq;
 using namespace std::chrono;
@@ -26,16 +26,15 @@ Net::Net(Breeder breeder, size_t mapSize) : fish_cnt(breeder.getCnt()), mapSize(
 }
 
 void Net::moveFishWhile(std::atomic_bool &live) {
+    sf::Time deltaT;
+//#pragma omp parallel shared(deltaT)
     while (live) {
+//#pragma omp master
         working.lock();
-        sf::Time deltaT = lastUpdate.restart();
-#ifdef PARAL
-#pragma omp parallel
-#endif
+//#pragma omp single
+        deltaT = lastUpdate.restart();
         for (size_t j = 0; j < 9; j++) {
-#ifdef PARAL
-#pragma omp for schedule(dynamic)
-#endif
+//#pragma omp for schedule(dynamic)
             for (size_t i = j; i < cellCnt * cellCnt; i += 9) {
                 vec cord(i % cellCnt, i / cellCnt);
 
@@ -55,6 +54,7 @@ void Net::moveFishWhile(std::atomic_bool &live) {
                 }
             }
         }
+//#pragma omp master
         working.unlock();
         std::this_thread::sleep_for(1ns);
     }
