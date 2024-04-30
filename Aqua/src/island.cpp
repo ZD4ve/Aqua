@@ -41,7 +41,7 @@ void Island::draw(sf::RenderTarget &target) {
     shader.setUniform("u_bottom_right", sf::Glsl::Vec2(target.mapPixelToCoords(vec(target.getSize()))));
     target.draw(canvasS, &shader);
 }
-bool Island::Map::operator()(vec cord) const {
+bool Island::Map::waterAt(vec cord) const {
     vec size = data.getSize();
     vec pixel(std::round(cord.x), std::round(cord.y));
     if (pixel.x >= size.x || pixel.y >= size.y || pixel.x < 0 || pixel.y < 0) {

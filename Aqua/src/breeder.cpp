@@ -1,5 +1,6 @@
 #include "breeder.hpp"
 
+#include "color.hpp"
 #include "forces.hpp"
 
 using namespace aq;
@@ -22,15 +23,16 @@ Fish *Breeder::make() {
     forces.push_back(new IslandForce(0.15, *dep.map));
 
     for (size_t i = 0; i < opt.n_of_fishes; i++) {
+        Color col = Color::randomColor(45, 45, .9, .5, 20);
         // TODO: Fish generation
         float vis = 20;
         vec pos;
         do {
             pos.x = std::rand() % static_cast<size_t>(opt.mapSize.x);
             pos.y = std::rand() % static_cast<size_t>(opt.mapSize.y);
-        } while (!dep.map->operator()(pos));
+        } while (!dep.map->waterAt(pos));
 
-        Fish fish = Fish(pos, forces, vis, sf::Color(std::rand() % 255, std::rand() % 255, std::rand() % 255));
+        Fish fish = Fish(pos, forces, vis, col);
         storage[i] = fish;
 
         if (max_vision < vis) max_vision = vis;

@@ -169,7 +169,7 @@ class IslandForce : public Force {
         for (size_t i = 0; i < nOfSamplePoints; i++) {
             vec sample(samplePoints[i].x, samplePoints[i].y);
             vec offset = sample * vis;
-            if (map(loc + offset)) continue;
+            if (map.waterAt(loc + offset)) continue;
             sum -= offset / square(sample.len());
         }
     }

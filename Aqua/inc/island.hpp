@@ -22,7 +22,7 @@ class Island {
          * @param cord cord on map
          * @return true if water, false is island
          */
-        bool operator()(vec cord) const;
+        bool waterAt(vec cord) const;
     };
 
    private:
