@@ -23,6 +23,7 @@ Engine::Engine(vec window_size, size_t fish_number, unsigned int seed) {
 
     Breeder::Settings fish_settings;
     fish_settings.n_of_fishes = fish_number;
+    fish_settings.n_of_species = 10;
     fish_settings.mapSize = island->getMapSize();
     Breeder::Dependency dependencies;
     dependencies.map = &island->getMap();
