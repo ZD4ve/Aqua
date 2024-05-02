@@ -86,6 +86,32 @@ class CohesionForce : public Force {
     }
 };
 
+class SpeciesCohesionForce : public Force {
+   protected:
+    size_t n_of_close{0};
+
+   public:
+    explicit SpeciesCohesionForce(float weight) : Force(weight){};
+    virtual void accum(const Fish &near) {
+        if (!me->sameSpeciesAs(near)) return;
+        vec diff = near.getLocation() - me->getLocation();
+        sum += diff;
+        ++n_of_close;
+    }
+    virtual void finalize() {
+        if (n_of_close == 0) return;
+        sum.x /= n_of_close;
+        sum.y /= n_of_close;
+        n_of_close = 0;
+    }
+    virtual ~SpeciesCohesionForce() {}
+    virtual Force *clone() {
+        Force *ptr = new SpeciesCohesionForce{*this};
+        ptr->setMe(nullptr);
+        return ptr;
+    }
+};
+
 class WaterResistanteForce : public Force {
    public:
     explicit WaterResistanteForce(float weight) : Force(weight){};
@@ -166,12 +192,15 @@ class IslandForce : public Force {
     virtual void finalize() {
         float vis = me->getVision();
         vec loc = me->getLocation();
+        size_t land_cnt = 0;
         for (size_t i = 0; i < nOfSamplePoints; i++) {
             vec sample(samplePoints[i].x, samplePoints[i].y);
             vec offset = sample * vis;
             if (map.waterAt(loc + offset)) continue;
             sum -= offset / square(sample.len());
+            ++land_cnt;
         }
+        if (land_cnt > (nOfSamplePoints / 2) && !map.waterAt(loc)) me->kill();
     }
     virtual Force *clone() {
         Force *ptr = new IslandForce{*this};

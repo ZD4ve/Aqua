@@ -13,7 +13,7 @@ Fish::Fish() {
     loadTexture();
     instance_cnt++;
 }
-Fish::Fish(vec pos, const std::vector<Force *> &forces, float vision, sf::Color color) : position(pos), vision(std::abs(vision)) {
+Fish::Fish(vec pos, const std::vector<Force *> &forces, float vision, sf::Color color, size_t species) : position(pos), species_id(species), vision(std::abs(vision)) {
     this->forces.reserve(forces.size());
     for (const auto &f : forces) {
         Force *force = f->clone();
@@ -28,7 +28,7 @@ Fish::Fish(vec pos, const std::vector<Force *> &forces, float vision, sf::Color 
     sp.setColor(color);
     ++instance_cnt;
 }
-Fish::Fish(const Fish &rhs) : position(rhs.position), velocity(rhs.velocity), vision(rhs.vision), sp(rhs.sp) {
+Fish::Fish(const Fish &rhs) : position(rhs.position), velocity(rhs.velocity), species_id(rhs.species_id), vision(rhs.vision), sp(rhs.sp) {
     this->forces.reserve(rhs.forces.size());
     for (const auto &f : rhs.forces) {
         Force *force = f->clone();
@@ -41,6 +41,7 @@ Fish &Fish::operator=(const Fish &rhs) {
     if (this == &rhs) return *this;
     velocity = rhs.velocity;
     position = rhs.position;
+    species_id = rhs.species_id;
     vision = rhs.vision;
     sp = rhs.sp;
     for (size_t i = 0; i < forces.size(); i++) {
@@ -57,10 +58,14 @@ Fish &Fish::operator=(const Fish &rhs) {
 }
 void Fish::loadTexture() {
     if (tex != nullptr) return;
-    tex = new sf::Texture[n_of_animations];
-    for (size_t i = 0; i < n_of_animations; i++) {
+    tex = new sf::Texture[n_of_animations + 1];
+    for (size_t i = 0; i < n_of_animations + 1; i++) {
         std::ostringstream path;
-        path << "asset/fish" << i << ".png";
+        if (i < n_of_animations) {
+            path << "asset/fish" << i << ".png";
+        } else {
+            path << "asset/fishdead.png";
+        }
         if (!tex[i].loadFromFile(path.str())) {
             throw std::runtime_error("Fish texture load failed!");
         }
@@ -70,17 +75,19 @@ void Fish::loadTexture() {
 }
 
 void Fish::draw(RenderTarget &target) {
-    constexpr float max_wait = 0.35;
-    constexpr float fastest_speed = 30;
-    float threshold = max_wait - (std::hypot(velocity.x, velocity.y) * max_wait / fastest_speed);
-    if (last_animation_update.getElapsedTime().asSeconds() > threshold) {
-        last_animation_update.restart();
-        ++animation_state;
-        if (animation_state == n_of_animations) animation_state = 0;
-        sp.setTexture(tex[animation_state]);
+    if (!dead) {
+        constexpr float max_wait = 0.35;
+        constexpr float fastest_speed = 30;
+        float threshold = max_wait - (std::hypot(velocity.x, velocity.y) * max_wait / fastest_speed);
+        if (last_animation_update.getElapsedTime().asSeconds() > threshold) {
+            last_animation_update.restart();
+            ++animation_state;
+            if (animation_state == n_of_animations) animation_state = 0;
+            sp.setTexture(tex[animation_state]);
+        }
+        sp.setPosition(position);
+        sp.setRotation(std::atan2(velocity.y, velocity.x) * 180 / M_PI + 90);
     }
-    sp.setPosition(position);
-    sp.setRotation(std::atan2(velocity.y, velocity.x) * 180 / M_PI + 90);
     target.draw(sp);
 }
 bool Fish::canSee(const vec &pos) const {

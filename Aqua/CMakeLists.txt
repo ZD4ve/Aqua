@@ -28,7 +28,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         PRIVATE
             -fsanitize=address
             -fno-omit-frame-pointer
-            -Og
     )
     target_link_options(${PROJECT_NAME}
         PRIVATE

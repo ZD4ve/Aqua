@@ -19,7 +19,7 @@ class Color {
     static double distribution(double x) {
         return x * std::abs(x);
     }
-    static inline double random() {
+    static inline double rNorm() {
         return (std::rand() / static_cast<double>(RAND_MAX)) * 2 - 1;
     }
 
@@ -36,15 +36,15 @@ class Color {
      * @brief Generate a random color centered with a distribution
      * @param hue_center [0,360)
      * @param hue_range allowed +- from center
-     * @param color_randomness randomness of rgb generated from the returned color
+     * @param color_variation randomness of rgb generated from the returned color
      */
-    static Color randomColor(double hue_center, double hue_range, double saturation, double lightness, double color_randomness = 0) {
-        double hue = hue_center + hue_range * distribution(random());
-        return Color(hue, saturation, lightness, color_randomness);
+    static Color randomColor(double saturation, double lightness, double color_variation = 0) {
+        double hue = std::rand() % 360;
+        return Color(hue, saturation, lightness, color_variation);
     }
 
     operator sf::Color() {
-        return HSLtoRGB(H + r * distribution(random()), S, L);
+        return HSLtoRGB(H + r * distribution(rNorm()), S, L);
     }
 };
 }  // namespace aq

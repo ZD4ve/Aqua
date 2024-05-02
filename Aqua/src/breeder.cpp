@@ -16,7 +16,8 @@ Fish *Breeder::make() {
     std::vector<Force *> forces;
     forces.push_back(new SeparationForce(0.2, 7));
     forces.push_back(new AlignmentForce(0.8));
-    forces.push_back(new CohesionForce(0.8));
+    forces.push_back(new CohesionForce(0.2));
+    forces.push_back(new SpeciesCohesionForce(0.6));
     forces.push_back(new WaterResistanteForce(0.01));
     forces.push_back(new MinSpeedForce(10));
     forces.push_back(new MouseForce(0.5, 30, *dep.mousPos));
@@ -27,7 +28,7 @@ Fish *Breeder::make() {
     }
 
     for (size_t s = 0; s < opt.n_of_species; s++) {
-        Color col = Color::randomColor(45, 90, .9, .5, 10);
+        Color col = Color::randomColor(.8, .65, 15);
         float vis = 20;
         vec spawn;
         do {
@@ -40,10 +41,10 @@ Fish *Breeder::make() {
             do {
                 pos.x = spawn.x + std::rand() % range - range / 2;
                 pos.y = spawn.y + std::rand() % range - range / 2;
-                range *= 1.2;
+                range *= 1.05;
             } while (!dep.map->waterAt(pos));
 
-            Fish fish = Fish(pos, forces, vis, col);
+            Fish fish = Fish(pos, forces, vis, col, s);
             storage[s * opt.n_of_fishes / opt.n_of_species + i] = fish;
 
             if (max_vision < vis) max_vision = vis;

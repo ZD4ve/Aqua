@@ -7,7 +7,7 @@ class Fish;
 
 class Force {
    protected:
-    const Fish *me{nullptr};
+    Fish *me{nullptr};
     vec sum{0, 0};
     float weight;
 
