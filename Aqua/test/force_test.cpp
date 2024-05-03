@@ -9,9 +9,14 @@ TEST(HelloTest, BasicAssertions) {
     // Expect equality.
     EXPECT_EQ(7 * 6, 42);
 }
-TEST(HelloTest, BasicAssertions2) {
-    // Expect two strings not to be equal.
-    EXPECT_STRNE("hello", "sdasdsa");
-    // Expect equality.
-    EXPECT_EQ(1 + 1, 2);
-}
+/*
+Tesztelesi Terv:
+
+1.
+A GUI-tól független erők tesztelése:
+Minden erőhöz venni 2-3 halat, és megnézni,
+hogy milyen irányba mozdulnak el, különböző paraméterekkel.
+
+2.
+Halott hal nem mozog, és nem hat másokra.
+*/
