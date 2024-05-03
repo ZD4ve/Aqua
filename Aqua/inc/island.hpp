@@ -31,12 +31,14 @@ class Island {
     sf::Shader shader;
     vec mapSize;
     Map map;
+    const sf::Color bgColor = sf::Color(19, 109, 21);
 
    public:
     explicit Island(vec mapSize);
     void draw(sf::RenderTarget &target);
-    const Map &getMap() { return map; }
-    vec getMapSize() { return mapSize; }
+    const Map &getMap() const { return map; }
+    vec getMapSize() const { return mapSize; }
+    sf::Color getBGcolor() const { return bgColor; }
 };
 
 }  // namespace aq

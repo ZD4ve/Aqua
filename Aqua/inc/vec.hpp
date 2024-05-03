@@ -106,6 +106,6 @@ struct vec {
         // return static_cast<ssize_t>(std::floor(x)) == static_cast<ssize_t>(std::floor(v.x)) && static_cast<ssize_t>(std::floor(y)) == static_cast<ssize_t>(std::floor(v.y));
     }
     sf::Vector2<ssize_t> whole() const {
-        return {static_cast<ssize_t>(std::round(x - 0.5) + 0.5), static_cast<ssize_t>(std::round(y - 0.5) + 0.5)};
+        return {static_cast<ssize_t>(std::floor(x)), static_cast<ssize_t>(std::floor(y))};
     }
 };

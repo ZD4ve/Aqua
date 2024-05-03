@@ -21,7 +21,7 @@ Island::Island(vec mapSize) : mapSize(mapSize) {
     shader.setUniform("col_low_sand", sf::Glsl::Vec4(sf::Color(246, 215, 176)));
     shader.setUniform("col_high_sand", sf::Glsl::Vec4(sf::Color(255, 191, 146)));
     shader.setUniform("col_low_grass", sf::Glsl::Vec4(sf::Color(65, 152, 10)));
-    shader.setUniform("col_high_grass", sf::Glsl::Vec4(sf::Color(19, 109, 21)));
+    shader.setUniform("col_high_grass", sf::Glsl::Vec4(bgColor));
     shader.setUniform("u_water_level", 0.6F);
     shader.setUniform("u_sand_level", 0.7F);
 

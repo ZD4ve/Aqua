@@ -49,7 +49,7 @@ void Engine::stopParalellLife() {
     bgLife.join();
 }
 void Engine::draw() {
-    window->clear(sf::Color(19, 109, 21));
+    window->clear(island->getBGcolor());
 
     island->draw(*window);
     net->draw(*window);

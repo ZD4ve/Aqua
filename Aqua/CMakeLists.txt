@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.14)
 project(Aqua LANGUAGES CXX)
 
 
@@ -10,6 +10,14 @@ FetchContent_Declare(SFML
 GIT_REPOSITORY https://github.com/SFML/SFML.git
 GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
+
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
 
 
 file(GLOB SOURCES src/*.cpp)
@@ -45,7 +53,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
             -Ofast
     )
 endif()
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
 if(WIN32)
 add_custom_command(
@@ -58,3 +66,24 @@ endif()
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)# -Werror
         
 install(TARGETS ${PROJECT_NAME})
+
+
+
+enable_testing()
+
+#file(GLOB Tests test/*.cpp)
+
+add_executable(
+    tests test/force_test.cpp
+)
+target_include_directories(tests PRIVATE inc)
+target_compile_features(tests PRIVATE cxx_std_20)
+target_link_libraries(
+  tests
+  GTest::gtest
+  GTest::gtest_main
+  sfml-graphics
+)
+
+include(GoogleTest)
+gtest_discover_tests(tests)

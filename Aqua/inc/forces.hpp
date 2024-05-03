@@ -200,7 +200,7 @@ class IslandForce : public Force {
             sum -= offset / square(sample.len());
             ++land_cnt;
         }
-        if (land_cnt > (nOfSamplePoints / 2) && !map.waterAt(loc)) me->kill();
+        if (land_cnt > (nOfSamplePoints / 3) * 2 && !map.waterAt(loc)) me->kill();
     }
     virtual Force *clone() {
         Force *ptr = new IslandForce{*this};
