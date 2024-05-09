@@ -24,12 +24,12 @@ class Engine {
    public:
     explicit Engine(vec window_size, size_t fish_number, unsigned int seed);
     void draw();
-    void startParalellLife();
-    void stopParalellLife();
+    void startParallelLife();
+    void stopParallelLife();
     bool isRunning() {
         return window->isOpen();
     }
-    void handeEvents();
+    void handleEvents();
     ~Engine();
 };
 

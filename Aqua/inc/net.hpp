@@ -11,7 +11,7 @@ namespace aq {
 class Net {
    public:
     typedef std::list<Fish *> cell;
-    class LocalisedIterator {
+    class LocalizedIterator {
        private:
         Net &net;
         const vec centerCord;
@@ -27,7 +27,7 @@ class Net {
         }
 
        public:
-        LocalisedIterator(Net &net, const Fish &centerFish);
+        LocalizedIterator(Net &net, const Fish &centerFish);
         void gotoEnd() {
             idx = 8;
             updateIters();
@@ -39,13 +39,13 @@ class Net {
         Fish *operator->() {
             return *currIter;
         }
-        LocalisedIterator &operator++();
-        LocalisedIterator operator++(int) {
+        LocalizedIterator &operator++();
+        LocalizedIterator operator++(int) {
             auto tmp = *this;
             operator++();
             return tmp;
         }
-        bool operator!=(const LocalisedIterator &rhs) {
+        bool operator!=(const LocalizedIterator &rhs) {
             return currIter != rhs.currIter;
         }
     };
@@ -62,8 +62,8 @@ class Net {
     vec getCord(const Fish &fish) const;
     cell &at(vec cord);
 
-    LocalisedIterator begin(const Fish &centerFish);
-    LocalisedIterator end(const Fish &centerFish);
+    LocalizedIterator begin(const Fish &centerFish);
+    LocalizedIterator end(const Fish &centerFish);
 
    public:
     explicit Net(Breeder breeder, size_t mapSize = 1000);

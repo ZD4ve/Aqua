@@ -5,9 +5,9 @@
 
 using namespace aq;
 
-Breeder::Breeder(Settings fishSettings, Dependency forceDependecies) : opt(fishSettings), dep(forceDependecies) {
+Breeder::Breeder(Settings fishSettings, Dependency forceDependencies) : opt(fishSettings), dep(forceDependencies) {
     if (!dep.isSet()) {
-        throw std::logic_error("Force dependencies hasnt been set correctly!");
+        throw std::logic_error("Force dependencies hasn't been set correctly!");
     }
 }
 
@@ -18,9 +18,9 @@ Fish *Breeder::make() {
     forces.push_back(new AlignmentForce(0.8));
     forces.push_back(new CohesionForce(0.2));
     forces.push_back(new SpeciesCohesionForce(0.6));
-    forces.push_back(new WaterResistanteForce(0.01));
+    forces.push_back(new WaterResistanceForce(0.01));
     forces.push_back(new MinSpeedForce(10));
-    forces.push_back(new MouseForce(0.5, 30, *dep.mousPos));
+    forces.push_back(new MouseForce(0.5, 30, *dep.mousePos));
     forces.push_back(new IslandForce(0.15, *dep.map));
 
     if (opt.n_of_fishes % opt.n_of_species != 0) {

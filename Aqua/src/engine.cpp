@@ -27,23 +27,23 @@ Engine::Engine(vec window_size, size_t fish_number, unsigned int seed) {
     fish_settings.mapSize = island->getMapSize();
     Breeder::Dependency dependencies;
     dependencies.map = &island->getMap();
-    dependencies.mousPos = &mousePosition;
+    dependencies.mousePos = &mousePosition;
     net = new Net(Breeder(fish_settings, dependencies), 1000);
 }
 
 Engine::~Engine() {
-    if (live) stopParalellLife();
+    if (live) stopParallelLife();
     window->close();
     delete window;
     delete net;
     delete island;
 }
-void Engine::startParalellLife() {
+void Engine::startParallelLife() {
     if (live) throw std::logic_error("Life already running!");
     live = true;
     bgLife = std::thread(&Net::moveFishWhile, this->net, std::ref(live));
 }
-void Engine::stopParalellLife() {
+void Engine::stopParallelLife() {
     if (!live) throw std::logic_error("Life already stopped!");
     live = false;
     bgLife.join();

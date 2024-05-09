@@ -85,11 +85,11 @@ vec Net::getCord(const Fish &fish) const {
     return loc / cellSize;
 }
 
-Net::LocalisedIterator Net::begin(const Fish &centerFish) {
-    return Net::LocalisedIterator(*this, centerFish);
+Net::LocalizedIterator Net::begin(const Fish &centerFish) {
+    return Net::LocalizedIterator(*this, centerFish);
 }
-Net::LocalisedIterator Net::end(const Fish &centerFish) {
-    auto iter = Net::LocalisedIterator(*this, centerFish);
+Net::LocalizedIterator Net::end(const Fish &centerFish) {
+    auto iter = Net::LocalizedIterator(*this, centerFish);
     iter.gotoEnd();
     return iter;
 }

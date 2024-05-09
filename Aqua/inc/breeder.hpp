@@ -17,10 +17,10 @@ class Breeder {
     };
     struct Dependency {
         const Island::Map *map;
-        const std::atomic<sf::Vector2f> *mousPos;
+        const std::atomic<sf::Vector2f> *mousePos;
         bool isSet() const {
             return map != nullptr &&
-                   mousPos != nullptr;
+                   mousePos != nullptr;
         }
     };
 
@@ -30,12 +30,12 @@ class Breeder {
     double max_vision = 0;
 
    public:
-    explicit Breeder(Settings fishSettings, Dependency forceDependecies);
+    explicit Breeder(Settings fishSettings, Dependency forceDependencies);
     size_t getCnt() const {
         return opt.n_of_fishes;
     }
     double getMaxVision() const {
-        if (max_vision == 0) throw std::logic_error("Fish hasnt been generated yet!");
+        if (max_vision == 0) throw std::logic_error("Fish hasn't been generated yet!");
         return max_vision;
     }
     Fish *make();

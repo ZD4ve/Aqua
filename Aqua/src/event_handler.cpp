@@ -3,7 +3,7 @@
 #include "engine.hpp"
 using namespace aq;
 
-void Engine::handeEvents() {
+void Engine::handleEvents() {
     static bool right_mouse_down = false;
     static bool left_mouse_down = false;
 

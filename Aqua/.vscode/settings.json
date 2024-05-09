@@ -1,6 +1,9 @@
 {
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "VsCodeTaskButtons.showCounter": false,
+    "cmake.debugConfig": {
+        "cwd": "${workspaceFolder}"
+    },
     "VsCodeTaskButtons.tasks": [
         {
             "label": "$(file-pdf) Generate documentation",
@@ -100,5 +103,6 @@
         "cfenv": "cpp"
     },
     "editor.formatOnSave": true,
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "cSpell.enabled": true
 }

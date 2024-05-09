@@ -112,9 +112,9 @@ class SpeciesCohesionForce : public Force {
     }
 };
 
-class WaterResistanteForce : public Force {
+class WaterResistanceForce : public Force {
    public:
-    explicit WaterResistanteForce(float weight) : Force(weight){};
+    explicit WaterResistanceForce(float weight) : Force(weight){};
     virtual void accum(const Fish &near) {
         (void)near;
     }
@@ -122,9 +122,9 @@ class WaterResistanteForce : public Force {
         vec v = me->getVelocity();
         sum -= vec(square_signed(v.x), square_signed(v.y));
     }
-    virtual ~WaterResistanteForce() {}
+    virtual ~WaterResistanceForce() {}
     virtual Force *clone() {
-        Force *ptr = new WaterResistanteForce{*this};
+        Force *ptr = new WaterResistanceForce{*this};
         ptr->setMe(nullptr);
         return ptr;
     }

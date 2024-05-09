@@ -19,13 +19,13 @@ constexpr double alpha = 0.1;
 int main() {
     aq::Engine eng(vec(1920, 1080), 1000, std::time(nullptr));
 
-    eng.startParalellLife();
+    eng.startParallelLife();
 
     double avgFPS = 0;
     auto last_frame = high_resolution_clock::now();
 
     while (eng.isRunning()) {
-        eng.handeEvents();
+        eng.handleEvents();
         eng.draw();
         auto now = high_resolution_clock::now();
         avgFPS = (alpha * FPS(now - last_frame)) + (1.0 - alpha) * avgFPS;
