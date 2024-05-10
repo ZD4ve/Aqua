@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/System/Vector2.hpp>
 #include <cmath>
+#include <iostream>
 #include <random>
 
 template <typename num>
@@ -64,7 +65,7 @@ struct vec {
     vec operator+(vec v) const {
         return vec(x + v.x, y + v.y);
     }
-    vec &operator+=(vec v) {
+    vec& operator+=(vec v) {
         x += v.x;
         y += v.y;
         return *this;
@@ -80,7 +81,7 @@ struct vec {
     friend vec operator-(sf::Vector2<T> v1, vec v2) {
         return vec(v1.x - v2.x, v1.y - v2.y);
     }
-    vec &operator-=(vec v) {
+    vec& operator-=(vec v) {
         x -= v.x;
         y -= v.y;
         return *this;
@@ -107,5 +108,9 @@ struct vec {
     }
     sf::Vector2<ssize_t> whole() const {
         return {static_cast<ssize_t>(std::floor(x)), static_cast<ssize_t>(std::floor(y))};
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, vec v) {
+        return os << "(" << v.x << ";" << v.y << ")";
     }
 };

@@ -1,16 +1,15 @@
-#include "forces.hpp"
-
 #include <gtest/gtest.h>
 
 #include "fish.hpp"
+#include "forces.hpp"
 
 using namespace aq;
 
 TEST(Force, SeparationForce) {
     std::vector<Force *> forces;
     forces.push_back(new SeparationForce(1, 10));
-    std::vector<Fish> storage;
     Fish dummy(vec(0, 0), forces, 100, sf::Color::Yellow, 0);
+    std::vector<Fish> storage;
     storage.emplace_back(vec(-1, -1), forces, 100, sf::Color::Black, 0);
     storage.emplace_back(vec(+1, -1), forces, 100, sf::Color::Black, 0);
     dummy.move(sf::seconds(1), storage.begin(), storage.end());
@@ -26,9 +25,9 @@ TEST(Force, AlignmentForce) {
     fear.push_back(new SeparationForce(1, 100));
     align.push_back(new AlignmentForce(1));
 
-    std::vector<Fish> storage;
     Fish dummy(vec(0, 0), align, 1000, sf::Color::Yellow, 0);
     Fish evil(vec(-1, -1), empty, 100, sf::Color::Red, 0);
+    std::vector<Fish> storage;
     storage.emplace_back(vec(-1, 0), fear, 100, sf::Color::Black, 0);
     storage.emplace_back(vec(0, -1), fear, 100, sf::Color::Black, 0);
     for (auto &&fish : storage) {
@@ -49,8 +48,8 @@ TEST(Force, AlignmentForce) {
 TEST(Force, CohesionForce) {
     std::vector<Force *> forces;
     forces.push_back(new CohesionForce(1));
-    std::vector<Fish> storage;
     Fish dummy(vec(0, 0), forces, 100, sf::Color::Yellow, 0);
+    std::vector<Fish> storage;
     storage.emplace_back(vec(-1, -1), forces, 100, sf::Color::Black, 0);
     storage.emplace_back(vec(+0, -1), forces, 100, sf::Color::Black, 0);
     storage.emplace_back(vec(+1, -1), forces, 100, sf::Color::Black, 0);
@@ -63,8 +62,8 @@ TEST(Force, CohesionForce) {
 TEST(Force, SpeciesCohesionForce) {
     std::vector<Force *> forces;
     forces.push_back(new SpeciesCohesionForce(1));
-    std::vector<Fish> storage;
     Fish dummy(vec(0, 0), forces, 100, sf::Color::Yellow, 0);
+    std::vector<Fish> storage;
     storage.emplace_back(vec(-1, -1), forces, 100, sf::Color::Yellow, 0);
     storage.emplace_back(vec(+1, -1), forces, 100, sf::Color::Yellow, 0);
     storage.emplace_back(vec(+5, -1), forces, 100, sf::Color::Black, 1);
@@ -76,9 +75,3 @@ TEST(Force, SpeciesCohesionForce) {
         delete f;
     }
 }
-/*
-Tesztelesi Terv:
-
-2.
-Halott hal nem mozog, és nem hat másokra.
-*/
