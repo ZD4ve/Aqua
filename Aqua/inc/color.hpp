@@ -19,7 +19,7 @@ class Color {
     static double distribution(double x) {
         return x * std::abs(x);
     }
-    static inline double rNorm() {
+    static double rNorm() {
         return (std::rand() / static_cast<double>(RAND_MAX)) * 2 - 1;
     }
 
@@ -43,7 +43,7 @@ class Color {
         return Color(hue, saturation, lightness, color_variation);
     }
 
-    operator sf::Color() {
+    operator sf::Color() const {
         return HSLtoRGB(H + r * distribution(rNorm()), S, L);
     }
 };

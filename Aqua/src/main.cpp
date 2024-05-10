@@ -29,7 +29,7 @@ int main() {
         eng.draw();
         auto now = high_resolution_clock::now();
         avgFPS = (alpha * FPS(now - last_frame)) + (1.0 - alpha) * avgFPS;
-        std::cout << std::setprecision(4) << avgFPS << " FPS" << std::endl;
+        std::cout << std::setprecision(4) << avgFPS << " FPS\n";
         last_frame = now;
     }
     return 0;

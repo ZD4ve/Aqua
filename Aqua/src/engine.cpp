@@ -41,7 +41,7 @@ Engine::~Engine() {
 void Engine::startParallelLife() {
     if (live) throw std::logic_error("Life already running!");
     live = true;
-    bgLife = std::thread(&Net::moveFishWhile, this->net, std::ref(live));
+    bgLife = std::jthread(&Net::moveFishWhile, this->net, std::ref(live));
 }
 void Engine::stopParallelLife() {
     if (!live) throw std::logic_error("Life already stopped!");
@@ -74,8 +74,8 @@ void Engine::resetView() {
     vec screen = window->getSize();
     sf::View view(sf::FloatRect(0.0F, 0.0F, screen.x, screen.y));
     view.setCenter(map.x / 2.0F, map.y / 2.0F);
-    double h_ratio = map.x / static_cast<double>(screen.x);
-    double v_ratio = map.y / static_cast<double>(screen.y);
+    double h_ratio = map.x / screen.x;
+    double v_ratio = map.y / screen.y;
     view.zoom(std::max(h_ratio, v_ratio));
     window->setView(view);
 }

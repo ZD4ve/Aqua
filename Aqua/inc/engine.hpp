@@ -16,7 +16,7 @@ class Engine {
     Island *island;
     std::atomic_bool live{false};
     const float zoomAmount = 1.3F;
-    std::thread bgLife;
+    std::jthread bgLife;
     std::atomic<sf::Vector2f> mousePosition;
     void zoomViewAt(vec pixel, bool in);
     void resetView();
@@ -26,7 +26,7 @@ class Engine {
     void draw();
     void startParallelLife();
     void stopParallelLife();
-    bool isRunning() {
+    bool isRunning() const{
         return window->isOpen();
     }
     void handleEvents();

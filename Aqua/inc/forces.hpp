@@ -28,7 +28,6 @@ class SeparationForce : public Force {
         if (dist < safeDist) sum -= diff * square(safeDist - dist);
     }
     virtual void finalize() {}
-    virtual ~SeparationForce() {}
     virtual Force *clone() {
         Force *ptr = new SeparationForce{*this};
         ptr->setMe(nullptr);
@@ -53,7 +52,6 @@ class AlignmentForce : public Force {
         sum -= me->getVelocity();
         n_of_close = 0;
     }
-    virtual ~AlignmentForce() {}
     virtual Force *clone() {
         Force *ptr = new AlignmentForce{*this};
         ptr->setMe(nullptr);
@@ -78,7 +76,6 @@ class CohesionForce : public Force {
         sum.y /= static_cast<double>(n_of_close);
         n_of_close = 0;
     }
-    virtual ~CohesionForce() {}
     virtual Force *clone() {
         Force *ptr = new CohesionForce{*this};
         ptr->setMe(nullptr);
@@ -104,7 +101,6 @@ class SpeciesCohesionForce : public Force {
         sum.y /= static_cast<double>(n_of_close);
         n_of_close = 0;
     }
-    virtual ~SpeciesCohesionForce() {}
     virtual Force *clone() {
         Force *ptr = new SpeciesCohesionForce{*this};
         ptr->setMe(nullptr);
@@ -122,7 +118,6 @@ class WaterResistanceForce : public Force {
         vec v = me->getVelocity();
         sum -= vec(square_signed(v.x), square_signed(v.y));
     }
-    virtual ~WaterResistanceForce() {}
     virtual Force *clone() {
         Force *ptr = new WaterResistanceForce{*this};
         ptr->setMe(nullptr);
@@ -142,7 +137,6 @@ class MinSpeedForce : public Force {
             sum += v.norm();
         }
     }
-    virtual ~MinSpeedForce() {}
     virtual Force *clone() {
         Force *ptr = new MinSpeedForce{*this};
         ptr->setMe(nullptr);
@@ -178,8 +172,8 @@ class IslandForce : public Force {
    protected:
     const Island::Map &map;
 
-    inline constexpr static const size_t nOfSamplePoints = 36;
-    inline constexpr static const struct {
+    constexpr static const size_t nOfSamplePoints = 36;
+    constexpr static const struct {
         double x, y;
     } samplePoints[nOfSamplePoints] =
         {{1.000, 0.000}, {0.940, 0.342}, {0.766, 0.643}, {0.500, 0.866}, {0.174, 0.985}, {-0.174, 0.985}, {-0.500, 0.866}, {-0.766, 0.643}, {-0.940, 0.342}, {-1.000, 0.000}, {-0.940, -0.342}, {-0.766, -0.643}, {-0.500, -0.866}, {-0.174, -0.985}, {0.174, -0.985}, {0.500, -0.866}, {0.766, -0.643}, {0.940, -0.342}, {0.667, 0.000}, {0.577, 0.333}, {0.333, 0.577}, {0.000, 0.667}, {-0.333, 0.577}, {-0.577, 0.333}, {-0.667, 0.000}, {-0.577, -0.333}, {-0.333, -0.577}, {-0.000, -0.667}, {0.333, -0.577}, {0.577, -0.333}, {0.333, 0.000}, {0.167, 0.289}, {-0.167, 0.289}, {-0.333, 0.000}, {-0.167, -0.289}, {0.167, -0.289}};

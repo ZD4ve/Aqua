@@ -7,7 +7,7 @@ concept arithmetic = std::integral<num> or std::floating_point<num>;
 
 struct vec {
    private:
-    static inline bool almostEQ(double a, double b) {
+    static bool almostEQ(double a, double b) {
         return std::abs(a - b) < 1.0E-10;
     }
 
@@ -103,7 +103,6 @@ struct vec {
         auto a = whole();
         auto b = v.whole();
         return a.x == b.x && a.y == b.y;
-        // return static_cast<ssize_t>(std::floor(x)) == static_cast<ssize_t>(std::floor(v.x)) && static_cast<ssize_t>(std::floor(y)) == static_cast<ssize_t>(std::floor(v.y));
     }
     sf::Vector2<ssize_t> whole() const {
         return {static_cast<ssize_t>(std::floor(x)), static_cast<ssize_t>(std::floor(y))};

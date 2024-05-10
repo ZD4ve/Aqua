@@ -19,21 +19,21 @@ class Fish {
     static constexpr size_t n_of_animations = 4;
     static sf::Texture *tex;
     static size_t instance_cnt;
-    void loadTexture();
+    static void loadTexture();
 
-    float vision;
+    double vision;
     sf::Sprite sp;
     size_t animation_state{0};
     sf::Clock last_animation_update;
 
    public:
     Fish();
-    Fish(vec pos, const std::vector<Force *> &forces, float vision, sf::Color color, size_t species);
+    Fish(vec pos, const std::vector<Force *> &forces, double vision, sf::Color color, size_t species);
     Fish(const Fish &rhs);
     Fish &operator=(const Fish &rhs);
     vec getLocation() const { return position; }
     vec getVelocity() const { return velocity; }
-    float getVision() const { return vision; }
+    double getVision() const { return vision; }
     bool canSee(const vec &pos) const;
     void kill() {
         dead.store(true);

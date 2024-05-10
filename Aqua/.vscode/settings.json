@@ -32,4 +32,16 @@
     },
     "editor.formatOnSave": true,
     "cmake.configureOnOpen": true,
+    "cSpell.language": "en,hu",
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
+        "google-build-using-namespace",
+        "google-readability-todo",
+        "readability-magic-numbers",
+        "readability-braces-around-statements",
+        "readability-identifier-length",
+        "bugprone-narrowing-conversions",
+        "modernize-use-trailing-return-type",
+        "bugprone-easily-swappable-parameters"
+    ],
 }

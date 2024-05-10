@@ -5,7 +5,7 @@
 using namespace aq;
 
 TEST(ForceTest, BasicAssertions) {
-    Fish f();
+    Fish test_dummy{};
     // Expect two strings not to be equal.
     EXPECT_STRNE("hello", "world");
     // Expect equality.

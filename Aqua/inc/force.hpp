@@ -17,7 +17,7 @@ class Force {
     vec getSum();
     virtual void accum(const Fish &near) = 0;
     virtual void finalize() = 0;
-    virtual ~Force(){};
+    virtual ~Force() = default;
     virtual Force *clone() = 0;
 };
 

@@ -10,7 +10,7 @@ sf::Color Color::HSLtoRGB(double H, double S, double L) {
     double H1 = H / 60;
     double X = C * (1 - std::abs(std::fmod(H1, 2.0) - 1));
     double R1 = 0, G1 = 0, B1 = 0;
-    switch ((int)H1) {
+    switch (static_cast<int>(H1)) {
         case 0:
             R1 = C;
             G1 = X;

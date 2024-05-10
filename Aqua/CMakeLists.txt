@@ -3,7 +3,7 @@ project(Aqua LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 #SFML
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -34,7 +34,7 @@ function(add_compile_options target)
             -Wall
             -Wextra
             -Wpedantic
-            -Wconversion
+            #-Wconversion
     )
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         target_compile_options(${target}
@@ -50,11 +50,11 @@ function(add_compile_options target)
         )
     endif()
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        target_compile_options(${PROJECT_NAME}
+        target_compile_options(${target}
             PRIVATE
                 -Ofast
         )
-        target_link_options(${PROJECT_NAME}
+        target_link_options(${target}
             PRIVATE
                 -Ofast
         )

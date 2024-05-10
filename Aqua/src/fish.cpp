@@ -13,7 +13,8 @@ Fish::Fish() {
     loadTexture();
     instance_cnt++;
 }
-Fish::Fish(vec pos, const std::vector<Force *> &forces, float vision, sf::Color color, size_t species) : position(pos), species_id(species), vision(std::abs(vision)) {
+
+Fish::Fish(vec pos, const std::vector<Force *> &forces, double vision, sf::Color color, size_t species) : position(pos), species_id(species), vision(std::abs(vision)) {
     this->forces.reserve(forces.size());
     for (const auto &f : forces) {
         Force *force = f->clone();
@@ -23,7 +24,7 @@ Fish::Fish(vec pos, const std::vector<Force *> &forces, float vision, sf::Color 
     loadTexture();
     sp = sf::Sprite(tex[0]);
     vec tex_size = tex[0].getSize();
-    sp.setOrigin(tex_size.x / 2.0, tex_size.y / 2.0);
+    sp.setOrigin(tex_size / 2.0);
     sp.setScale(vec(5.0 / tex_size.y, 5.0 / tex_size.y));
     sp.setColor(color);
     ++instance_cnt;
@@ -76,9 +77,9 @@ void Fish::loadTexture() {
 
 void Fish::draw(RenderTarget &target) {
     if (!dead) {
-        constexpr float max_wait = 0.35;
-        constexpr float fastest_speed = 30;
-        float threshold = max_wait - (std::hypot(velocity.x, velocity.y) * max_wait / fastest_speed);
+        constexpr double max_wait = 0.35;
+        constexpr double fastest_speed = 30;
+        double threshold = max_wait - (std::hypot(velocity.x, velocity.y) * max_wait / fastest_speed);
         if (last_animation_update.getElapsedTime().asSeconds() > threshold) {
             last_animation_update.restart();
             ++animation_state;
