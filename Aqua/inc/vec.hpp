@@ -7,6 +7,11 @@
 template <typename num>
 concept arithmetic = std::integral<num> or std::floating_point<num>;
 
+/**
+ * @brief A 2D vector
+ * @details Internally uses double for the coordinates
+ * Fully compatible with SFML's sf::Vector2 class
+ */
 struct vec {
    private:
     static bool almostEQ(double a, double b) {
@@ -86,6 +91,9 @@ struct vec {
         y -= v.y;
         return *this;
     }
+    /**
+     * @brief true if difference is less than 1.0E-10
+     */
     bool operator==(vec v) const {
         return almostEQ(x, v.x) && almostEQ(y, v.y);
     }
@@ -96,16 +104,27 @@ struct vec {
     double len() const {
         return std::hypot(x, y);
     }
+    /**
+     * @brief Returns a normalized vector
+     * @return if the length is less than 1.0E-10 a random direction is chosen
+     */
     vec norm() const {
         double l = len();
         if (l < 1.0E-10) return vec(std::sin(std::rand() / 1000.0), std::cos(std::rand() / 1000.0));
         return *this / l;
     }
+    /**
+     * @brief true if the whole part of the vector is equal
+     * @details rounds down
+     */
     bool wholeEQ(vec v) const {
         auto a = whole();
         auto b = v.whole();
         return a.x == b.x && a.y == b.y;
     }
+    /**
+     * @brief Rounds down the coordinates
+     */
     sf::Vector2<ssize_t> whole() const {
         return {static_cast<ssize_t>(std::floor(x)), static_cast<ssize_t>(std::floor(y))};
     }

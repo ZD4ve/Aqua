@@ -117,4 +117,8 @@
         "variant": "cpp"
     },
     "cSpell.enabled": true,
+    "cSpell.words": [
+        "SFML's",
+        "tparam"
+    ],
 }

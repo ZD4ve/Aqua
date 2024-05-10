@@ -17,6 +17,9 @@ inline double square_signed(double x) {
 
 namespace aq {
 
+/**
+ * @brief Fish want to keep a safe distance from each other
+ */
 class SeparationForce : public Force {
    protected:
     const double safeDist;
@@ -36,6 +39,9 @@ class SeparationForce : public Force {
     }
 };
 
+/**
+ * @brief Fish want to swim in the same direction and speed
+ */
 class AlignmentForce : public Force {
    protected:
     size_t n_of_close{0};
@@ -60,6 +66,9 @@ class AlignmentForce : public Force {
     }
 };
 
+/**
+ * @brief Fish want to stay close to each other
+ */
 class CohesionForce : public Force {
    protected:
     size_t n_of_close{0};
@@ -84,6 +93,9 @@ class CohesionForce : public Force {
     }
 };
 
+/**
+ * @brief Fish want to stay close to fish of the same species
+ */
 class SpeciesCohesionForce : public Force {
    protected:
     size_t n_of_close{0};
@@ -109,6 +121,9 @@ class SpeciesCohesionForce : public Force {
     }
 };
 
+/**
+ * @brief Fish get slowed down by the water
+ */
 class WaterResistanceForce : public Force {
    public:
     explicit WaterResistanceForce(double weight) : Force(weight){};
@@ -126,6 +141,9 @@ class WaterResistanceForce : public Force {
     }
 };
 
+/**
+ * @brief Fish dont want to go too slow
+ */
 class MinSpeedForce : public Force {
    public:
     explicit MinSpeedForce(double weight) : Force(weight){};
@@ -145,6 +163,9 @@ class MinSpeedForce : public Force {
     }
 };
 
+/**
+ * @brief Fish fear the mouse
+ */
 class MouseForce : public Force {
    protected:
     const double fearDist;
@@ -169,6 +190,9 @@ class MouseForce : public Force {
     }
 };
 
+/**
+ * @brief Fish want to stay in the water
+ */
 class IslandForce : public Force {
    protected:
     const Island::Map &map;

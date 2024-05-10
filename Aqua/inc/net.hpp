@@ -8,9 +8,16 @@
 #include "vec.hpp"
 
 namespace aq {
+
+/**
+ * @brief The net stores the fish and provides a cell based LUT
+ */
 class Net {
    public:
     typedef std::list<Fish *> cell;
+    /**
+     * @brief Iterates over the cells in the visual range of a fish
+     */
     class LocalizedIterator {
        private:
         Net &net;
@@ -55,8 +62,8 @@ class Net {
     Fish *storage;
     const size_t mapSize;
     sf::Clock lastUpdate;
-    std::mutex working;
-    cell **grid;
+    std::mutex working;  //< Blocks drawing while moving fish and vice versa
+    cell **grid;         //< location based lookup table
     double cellSize;
     size_t cellCnt;
     vec getCord(const Fish &fish) const;
@@ -64,11 +71,18 @@ class Net {
 
     LocalizedIterator begin(const Fish &centerFish);
     LocalizedIterator end(const Fish &centerFish);
+    Fish *begin() { return storage; }
+    Fish *end() { return storage + fish_cnt; }
 
    public:
     explicit Net(Breeder breeder, size_t mapSize = 1000);
 
     void draw(sf::RenderTarget &target);
+
+    /**
+     * @brief Infinitely loop that moves the fish until another thread sets live to false
+     * @returns after live is set to false and the last iteration is finished
+     */
     void moveFishWhile(std::atomic_bool &live);
 
     ~Net();

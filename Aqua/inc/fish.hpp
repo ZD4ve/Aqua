@@ -18,7 +18,11 @@ class Fish {
 
     static constexpr size_t n_of_animations = 4;
     static sf::Texture *tex;
-    static size_t instance_cnt;
+    static size_t instance_cnt;  ///< Number of instances for texture deletion
+    /**
+     * @brief Loads the textures
+     * @details Only loads them if they haven't been loaded yet and if there is a GUI
+     */
     static void loadTexture();
     static bool GUIactive() {
         return sf::Context::getActiveContextId() != 0;
@@ -38,6 +42,16 @@ class Fish {
     vec getVelocity() const { return velocity; }
     double getVision() const { return vision; }
     bool canSee(const vec &pos) const;
+    bool canSee(const Fish &near) const {
+        return canSee(near.position);
+    }
+    bool sameSpeciesAs(const Fish &near) const {
+        return species_id == near.species_id;
+    }
+    /**
+     * @brief Kills the fish
+     * @details Changes the texture to a skeleton, it will no langer move or effect other fish
+     */
     void kill() {
         dead.store(true);
         if (GUIactive()) {
@@ -45,13 +59,12 @@ class Fish {
             sp.setTexture(tex[n_of_animations]);
         }
     }
-    bool canSee(const Fish &near) const {
-        return canSee(near.position);
-    }
-    bool sameSpeciesAs(const Fish &near) const {
-        return species_id == near.species_id;
-    }
     void draw(sf::RenderTarget &target);
+    /**
+     * @brief Moves the fish according to it's internal forces
+     * @tparam iterator for a container of fish that effect *this
+     * @param deltaT time passed since last move call
+     */
     template <typename iterator>
     void move(sf::Time deltaT, iterator begin, iterator end) {
         if (dead) return;
@@ -66,7 +79,7 @@ class Fish {
         }
         for (auto &force : forces) {
             force->finalize();
-            velocity += force->getSum() * deltaT.asSeconds();
+            velocity += force->getValue() * deltaT.asSeconds();
         }
         vec delta = velocity * deltaT.asSeconds();
         if (delta.len() > vision) delta = delta.norm() * vision;

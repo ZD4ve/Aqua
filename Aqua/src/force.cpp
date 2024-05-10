@@ -8,7 +8,7 @@ void Force::setMe(Fish *me) {
     this->me = me;
 }
 
-vec Force::getSum() {
+vec Force::getValue() {
     vec tmp = sum;
     sum = vec(0, 0);
     return tmp * weight;

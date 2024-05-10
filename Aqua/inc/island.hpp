@@ -7,6 +7,9 @@ namespace aq {
 
 class Island {
    public:
+    /**
+     * @brief A non-copyable class that represents the map of the islands
+     */
     struct Map {
        private:
         sf::Image data;
@@ -17,11 +20,6 @@ class Island {
         Map() = default;
         Map(const Map &) = delete;
         Map &operator=(const Map &) = delete;
-        /**
-         * @brief Can fish go to cord
-         * @param cord cord on map
-         * @return true if water, false is island
-         */
         bool waterAt(vec cord) const;
     };
 
@@ -34,6 +32,10 @@ class Island {
     const sf::Color bgColor = sf::Color(19, 109, 21);
 
    public:
+    /**
+     * @brief Loads the openGL(GLSL) shader
+     * @throws if an error occurs while loading and compiling the shader
+     */
     explicit Island(vec mapSize);
     void draw(sf::RenderTarget &target);
     const Map &getMap() const { return map; }

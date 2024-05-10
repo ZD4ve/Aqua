@@ -12,7 +12,6 @@ class Breeder {
     struct Settings {
         size_t n_of_fishes = 100;
         size_t n_of_species = 1;
-        size_t randomness_pct = 0;
         vec mapSize;
     };
     struct Dependency {
@@ -34,10 +33,18 @@ class Breeder {
     size_t getCnt() const {
         return opt.n_of_fishes;
     }
+    /**
+     * @brief Returns the furthest distance a fish can see
+     * @warning Only callable after fish generation!
+     */
     double getMaxVision() const {
         if (max_vision == 0) throw std::logic_error("Fish hasn't been generated yet!");
         return max_vision;
     }
+    /**
+     * @brief Generates the fishes
+     * @return an array of the generated fishes, deletion is the callers responsibility
+     */
     Fish *make();
 };
 }  // namespace aq
