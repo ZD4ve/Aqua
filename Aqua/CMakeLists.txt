@@ -1,90 +1,111 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.21)
 project(Aqua LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+#SFML
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
-
-
 include(FetchContent)
 FetchContent_Declare(SFML
-GIT_REPOSITORY https://github.com/SFML/SFML.git
-GIT_TAG 2.6.x)
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+#Gtest
+find_package(GTest QUIET)
+if (NOT GTest_FOUND)
+    include(FetchContent)
+    FetchContent_Declare(
+            googletest
+            GIT_REPOSITORY https://github.com/google/googletest.git
+            GIT_TAG v1.14.0
+    )
+    FetchContent_MakeAvailable(googletest)
+endif ()
+
+
+function(add_compile_options target)
+    target_compile_options(${target}
+        PRIVATE
+            #-Werror
+            -Wall
+            -Wextra
+            -Wpedantic
+            -Wconversion
+    )
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        target_compile_options(${target}
+            PRIVATE
+                -fsanitize=address
+                -fno-omit-frame-pointer
+                -g
+        )
+        target_link_options(${target}
+            PRIVATE
+                -fsanitize=address
+                -g
+        )
+    endif()
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        target_compile_options(${PROJECT_NAME}
+            PRIVATE
+                -Ofast
+        )
+        target_link_options(${PROJECT_NAME}
+            PRIVATE
+                -Ofast
+        )
+    endif()
+endfunction()
+
+add_library(${PROJECT_NAME}_lib)
+target_include_directories(${PROJECT_NAME}_lib
+    PUBLIC
+        inc
 )
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
-
-
-file(GLOB SOURCES src/*.cpp)
-add_executable(${PROJECT_NAME} ${SOURCES})
-target_include_directories(${PROJECT_NAME} PRIVATE inc)
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics)
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
-
-find_package(OpenMP)
-if(OpenMP_CXX_FOUND)
-    target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX)
-endif()
-
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_options(${PROJECT_NAME}
-        PRIVATE
-            -fsanitize=address
-            -fno-omit-frame-pointer
-    )
-    target_link_options(${PROJECT_NAME}
-        PRIVATE
-            -fsanitize=address
-    )
-endif()
-
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_compile_options(${PROJECT_NAME}
-        PRIVATE
-            -Ofast
-    )
-    target_link_options(${PROJECT_NAME}
-        PRIVATE
-            -Ofast
-    )
-endif()
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
-
-if(WIN32)
-add_custom_command(
-    TARGET ${PROJECT_NAME}
-        COMMENT "Copy OpenAL DLL"
-        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        VERBATIM)
-endif()
-
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)# -Werror
-        
-install(TARGETS ${PROJECT_NAME})
-
-
-
-enable_testing()
-
-#file(GLOB Tests test/*.cpp)
-
-add_executable(
-    tests test/force_test.cpp
+target_link_libraries(${PROJECT_NAME}_lib
+    PUBLIC
+        sfml-graphics
 )
-target_include_directories(tests PRIVATE inc)
-target_compile_features(tests PRIVATE cxx_std_20)
-target_link_libraries(
-  tests
-  GTest::gtest
-  GTest::gtest_main
-  sfml-graphics
+target_sources(${PROJECT_NAME}_lib
+    PRIVATE 
+        src/breeder.cpp
+        src/color.cpp
+        src/engine.cpp
+        src/event_handler.cpp
+        src/fish.cpp
+        src/force.cpp
+        src/island.cpp
+        src/iter.cpp
+        src/net.cpp
+)
+add_compile_options(${PROJECT_NAME}_lib)
+
+
+add_executable(${PROJECT_NAME})
+target_sources(${PROJECT_NAME}
+    PRIVATE 
+        src/main.cpp
+)
+add_compile_options(${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        ${PROJECT_NAME}_lib
 )
 
-include(GoogleTest)
-gtest_discover_tests(tests)
+enable_testing() 
+
+add_executable(${PROJECT_NAME}_test)
+target_sources(${PROJECT_NAME}_test
+    PRIVATE
+        test/force_test.cpp
+)
+add_compile_options(${PROJECT_NAME}_test)
+target_link_libraries(${PROJECT_NAME}_test
+    PRIVATE
+        ${PROJECT_NAME}_lib
+        GTest::gtest_main
+)

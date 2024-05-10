@@ -9,10 +9,10 @@ class Force {
    protected:
     Fish *me{nullptr};
     vec sum{0, 0};
-    float weight;
+    double weight;
 
    public:
-    explicit Force(float weight) : weight(weight){};
+    explicit Force(double weight) : weight(weight){};
     void setMe(Fish *me);
     vec getSum();
     virtual void accum(const Fish &near) = 0;

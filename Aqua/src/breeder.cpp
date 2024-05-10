@@ -32,16 +32,15 @@ Fish *Breeder::make() {
         float vis = 20;
         vec spawn;
         do {
-            spawn.x = std::rand() % static_cast<size_t>(opt.mapSize.x);
-            spawn.y = std::rand() % static_cast<size_t>(opt.mapSize.y);
+            spawn.x = static_cast<double>(std::rand() % static_cast<size_t>(opt.mapSize.x));
+            spawn.y = static_cast<double>(std::rand() % static_cast<size_t>(opt.mapSize.y));
         } while (!dep.map->waterAt(spawn));
         for (size_t i = 0; i < opt.n_of_fishes / opt.n_of_species; i++) {
             vec pos;
-            int range = 100;
+            size_t range = 100;
             do {
-                pos.x = spawn.x + std::rand() % range - range / 2;
-                pos.y = spawn.y + std::rand() % range - range / 2;
-                range *= 1.05;
+                pos = spawn + vec(std::rand() % range - range / 2, std::rand() % range - range / 2);
+                range = std::min(static_cast<size_t>(static_cast<double>(range) * 1.05), 500UL);
             } while (!dep.map->waterAt(pos));
 
             Fish fish = Fish(pos, forces, vis, col, s);

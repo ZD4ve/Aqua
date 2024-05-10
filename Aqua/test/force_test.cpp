@@ -2,8 +2,10 @@
 
 #include "fish.hpp"
 
-// Demonstrate some basic assertions.
-TEST(HelloTest, BasicAssertions) {
+using namespace aq;
+
+TEST(ForceTest, BasicAssertions) {
+    Fish f();
     // Expect two strings not to be equal.
     EXPECT_STRNE("hello", "world");
     // Expect equality.
