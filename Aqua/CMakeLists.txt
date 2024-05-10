@@ -101,7 +101,9 @@ enable_testing()
 add_executable(${PROJECT_NAME}_test)
 target_sources(${PROJECT_NAME}_test
     PRIVATE
-        test/force_test.cpp
+        test/forces.cpp
+        test/fish.cpp
+
 )
 add_compile_options(${PROJECT_NAME}_test)
 target_link_libraries(${PROJECT_NAME}_test
@@ -109,3 +111,6 @@ target_link_libraries(${PROJECT_NAME}_test
         ${PROJECT_NAME}_lib
         GTest::gtest_main
 )
+
+include(GoogleTest)
+gtest_discover_tests(${PROJECT_NAME}_test)

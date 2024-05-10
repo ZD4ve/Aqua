@@ -21,12 +21,16 @@ Fish::Fish(vec pos, const std::vector<Force *> &forces, double vision, sf::Color
         force->setMe(this);
         this->forces.push_back(force);
     }
+
     loadTexture();
-    sp = sf::Sprite(tex[0]);
-    vec tex_size = tex[0].getSize();
-    sp.setOrigin(tex_size / 2.0);
-    sp.setScale(vec(5.0 / tex_size.y, 5.0 / tex_size.y));
-    sp.setColor(color);
+    if (GUIactive()) {
+        sp = sf::Sprite(tex[0]);
+        vec tex_size = tex[0].getSize();
+        sp.setOrigin(tex_size / 2.0);
+        sp.setScale(vec(5.0 / tex_size.y, 5.0 / tex_size.y));
+        sp.setColor(color);
+    }
+
     ++instance_cnt;
 }
 Fish::Fish(const Fish &rhs) : position(rhs.position), velocity(rhs.velocity), species_id(rhs.species_id), vision(rhs.vision), sp(rhs.sp) {
@@ -59,6 +63,7 @@ Fish &Fish::operator=(const Fish &rhs) {
 }
 void Fish::loadTexture() {
     if (tex != nullptr) return;
+    if (!GUIactive()) return;
     tex = new sf::Texture[n_of_animations + 1];
     for (size_t i = 0; i < n_of_animations + 1; i++) {
         std::ostringstream path;

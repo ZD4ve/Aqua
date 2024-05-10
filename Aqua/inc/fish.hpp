@@ -20,6 +20,9 @@ class Fish {
     static sf::Texture *tex;
     static size_t instance_cnt;
     static void loadTexture();
+    static bool GUIactive() {
+        return sf::Context::getActiveContextId() != 0;
+    }
 
     double vision;
     sf::Sprite sp;
@@ -37,8 +40,10 @@ class Fish {
     bool canSee(const vec &pos) const;
     void kill() {
         dead.store(true);
-        sp.setColor(sf::Color(242, 235, 227));
-        sp.setTexture(tex[n_of_animations]);
+        if (GUIactive()) {
+            sp.setColor(sf::Color(242, 235, 227));
+            sp.setTexture(tex[n_of_animations]);
+        }
     }
     bool canSee(const Fish &near) const {
         return canSee(near.position);

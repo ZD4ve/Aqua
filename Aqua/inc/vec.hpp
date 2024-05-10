@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/System/Vector2.hpp>
 #include <cmath>
+#include <random>
 
 template <typename num>
 concept arithmetic = std::integral<num> or std::floating_point<num>;
