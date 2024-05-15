@@ -2,9 +2,7 @@
 
 // #include <omp.h>
 
-#include <atomic>
 #include <cmath>
-#include <thread>
 
 using namespace aq;
 using namespace std::chrono;
@@ -25,14 +23,16 @@ Net::Net(Breeder breeder, size_t mapSize) : fish_cnt(breeder.getCnt()), mapSize(
     }
 }
 
-void Net::moveFishWhile(std::atomic_bool &live) {
+void Net::moveFishWhile(std::stop_token life) {
     sf::Time deltaT;
     // #pragma omp parallel shared(deltaT)
-    while (live) {
+    while (!life.stop_requested()) {
         // #pragma omp master
         working.lock();
         // #pragma omp single
         deltaT = lastUpdate.restart();
+
+        // separated to 2 loops for the possibility of parallelism
         for (size_t j = 0; j < 9; j++) {
             // #pragma omp for schedule(dynamic)
             for (size_t i = j; i < cellCnt * cellCnt; i += 9) {

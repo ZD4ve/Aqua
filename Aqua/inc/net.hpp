@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include <mutex>
+#include <stop_token>
 #include <vector>
 
 #include "breeder.hpp"
@@ -83,7 +84,7 @@ class Net {
      * @brief Infinitely loop that moves the fish until another thread sets live to false
      * @returns after live is set to false and the last iteration is finished
      */
-    void moveFishWhile(std::atomic_bool &live);
+    void moveFishWhile(std::stop_token live);
 
     ~Net();
 };

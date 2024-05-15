@@ -1,8 +1,6 @@
 #include "engine.hpp"
 
 #include <SFML/Graphics.hpp>
-#include <atomic>
-#include <thread>
 
 using namespace aq;
 using namespace std::chrono;
@@ -11,7 +9,7 @@ Engine::Engine(vec window_size, size_t fish_number, unsigned int seed) {
     std::srand(seed);
 
     sf::ContextSettings win_settings;
-    // win_settings.antialiasingLevel = 8;
+    win_settings.antialiasingLevel = 4;
     win_settings.majorVersion = 3;
     win_settings.minorVersion = 2;
     sf::VideoMode win_size = sf::VideoMode(window_size.x, window_size.y);
@@ -32,21 +30,15 @@ Engine::Engine(vec window_size, size_t fish_number, unsigned int seed) {
 }
 
 Engine::~Engine() {
-    if (live) stopParallelLife();
     window->close();
+    bgLife.request_stop();
+    bgLife.join();
     delete window;
     delete net;
     delete island;
 }
 void Engine::startParallelLife() {
-    if (live) throw std::logic_error("Life already running!");
-    live = true;
-    bgLife = std::jthread(&Net::moveFishWhile, this->net, std::ref(live));
-}
-void Engine::stopParallelLife() {
-    if (!live) throw std::logic_error("Life already stopped!");
-    live = false;
-    bgLife.join();
+    bgLife = std::jthread(std::bind_front(&Net::moveFishWhile, this->net));
 }
 void Engine::draw() {
     window->clear(island->getBGcolor());

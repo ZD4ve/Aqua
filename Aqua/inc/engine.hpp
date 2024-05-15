@@ -1,6 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <atomic>
 #include <thread>
 
 #include "island.hpp"
@@ -14,7 +13,6 @@ class Engine {
     sf::RenderWindow *window;
     Net *net;
     Island *island;
-    std::atomic_bool live{false};  ///< Whether the background process is running
     const float zoomAmount = 1.3F;
     std::jthread bgLife;
     std::atomic<sf::Vector2f> mousePosition;  ///< The position of the mouse for objects that cannot access the window
@@ -25,15 +23,12 @@ class Engine {
     explicit Engine(vec window_size, size_t fish_number, unsigned int seed);
     void draw();
     /**
-     * @brief Starts the background process for the calculations
-     * @details Should only be called when not already running
+     * @brief Starts the background process for the calculations 
      */
     void startParallelLife();
     /**
      * @brief Stops the background process for the calculations
-     * @details Should only be called when running
      */
-    void stopParallelLife();
     bool isRunning() const {
         return window->isOpen();
     }

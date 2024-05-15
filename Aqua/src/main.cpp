@@ -5,6 +5,13 @@
 #include "engine.hpp"
 #include "vec.hpp"
 
+/**
+ * @details
+ * Feel free to experiment with different number of fishes, based on your systems performance.
+ * On my machine it can run 3x of fish in Release.
+ */
+#define NUMBER_OF_FISH 500
+
 using namespace std::chrono;
 
 inline double dT(nanoseconds dt) {
@@ -17,7 +24,7 @@ inline double FPS(nanoseconds dt) {
 constexpr double alpha = 0.1;
 
 int main() {
-    aq::Engine eng(vec(1920, 1080), 1000, std::time(nullptr));
+    aq::Engine eng(vec(1920, 1080), NUMBER_OF_FISH, std::time(nullptr));
 
     eng.startParallelLife();
 

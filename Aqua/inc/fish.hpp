@@ -25,7 +25,8 @@ class Fish {
      */
     static void loadTexture();
     static bool GUIactive() {
-        return sf::Context::getActiveContextId() != 0;
+        static bool active = sf::Context::getActiveContextId() != 0;
+        return active;
     }
 
     double vision;
@@ -50,7 +51,7 @@ class Fish {
     }
     /**
      * @brief Kills the fish
-     * @details Changes the texture to a skeleton, it will no langer move or effect other fish
+     * @details Changes the texture to a skeleton, it will no longer move or effect other fish
      */
     void kill() {
         dead.store(true);
