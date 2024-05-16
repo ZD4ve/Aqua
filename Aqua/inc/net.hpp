@@ -15,7 +15,7 @@ namespace aq {
  */
 class Net {
    public:
-    typedef std::list<Fish *> cell;
+    using cell = std::list<Fish *>;
     /**
      * @brief Iterates over the cells in the visual range of a fish
      */

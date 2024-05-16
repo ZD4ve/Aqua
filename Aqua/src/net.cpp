@@ -13,10 +13,10 @@ Net::Net(Breeder breeder, size_t mapSize) : fish_cnt(breeder.getCnt()), mapSize(
     if (cnt == 0) throw std::logic_error("Fish see farther than map size!");
     cellSize = mapSize / static_cast<float>(cnt);
     cellCnt = mapSize / cellSize;
-    grid = new Net::cell *[cellCnt + 4];
-    grid[0] = new Net::cell[(cellCnt + 4) * (cellCnt + 4)];
-    for (size_t i = 1; i < cellCnt + 4; i++) {
-        grid[i] = grid[i - 1] + cellCnt + 4;
+    grid = new Net::cell *[cellCnt];
+    grid[0] = new Net::cell[(cellCnt) * (cellCnt)];
+    for (size_t i = 1; i < cellCnt; i++) {
+        grid[i] = grid[i - 1] + cellCnt;
     }
     for (size_t i = 0; i < fish_cnt; i++) {
         at(getCord(storage[i])).push_front(&storage[i]);
@@ -25,20 +25,15 @@ Net::Net(Breeder breeder, size_t mapSize) : fish_cnt(breeder.getCnt()), mapSize(
 
 void Net::moveFishWhile(std::stop_token life) {
     sf::Time deltaT;
-    // #pragma omp parallel shared(deltaT)
     while (!life.stop_requested()) {
-        // #pragma omp master
-        working.lock();
-        // #pragma omp single
         deltaT = lastUpdate.restart();
-
         // separated to 2 loops for the possibility of parallelism
         for (size_t j = 0; j < 9; j++) {
-            // #pragma omp for schedule(dynamic)
             for (size_t i = j; i < cellCnt * cellCnt; i += 9) {
                 vec cord(i % cellCnt, i / cellCnt);
 
                 cell &current_cell = at(cord);
+                std::lock_guard lock{working};
                 for (cell::iterator iter = current_cell.begin(); iter != current_cell.end();) {
                     Fish &fish = **iter;
 
@@ -54,17 +49,15 @@ void Net::moveFishWhile(std::stop_token life) {
                 }
             }
         }
-        // #pragma omp master
-        working.unlock();
-        std::this_thread::sleep_for(1ns);
+        std::this_thread::sleep_for(1ms);
     }
 }
 Net::cell &Net::at(vec cord) {
     auto v = cord.whole();
-    if (v.x < -2 || v.y < -2 || v.x > static_cast<ssize_t>(cellCnt + 1) || v.y > static_cast<ssize_t>(cellCnt + 1)) {
-        throw std::out_of_range("Indexing out of grid!");
-    }
-    return grid[v.x + 2][v.y + 2];
+    v.x = std::clamp(v.x, 0L, static_cast<ssize_t>(cellCnt - 1));
+    v.y = std::clamp(v.y, 0L, static_cast<ssize_t>(cellCnt - 1));
+
+    return grid[v.x][v.y];
 }
 
 void Net::draw(sf::RenderTarget &target) {

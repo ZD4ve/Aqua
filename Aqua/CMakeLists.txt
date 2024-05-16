@@ -98,6 +98,7 @@ target_link_libraries(${PROJECT_NAME}
         ${PROJECT_NAME}_lib
 )
 
+#include(CTest)
 enable_testing() 
 
 add_executable(${PROJECT_NAME}_test)

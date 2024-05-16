@@ -68,6 +68,6 @@ void Engine::resetView() {
     view.setCenter(map.x / 2.0F, map.y / 2.0F);
     double h_ratio = map.x / screen.x;
     double v_ratio = map.y / screen.y;
-    view.zoom(std::max(h_ratio, v_ratio));
+    view.zoom(std::min(h_ratio, v_ratio) * 0.8);
     window->setView(view);
 }
