@@ -5,6 +5,19 @@
 #include "engine.hpp"
 #include "vec.hpp"
 
+/** @mainpage Developer documentation
+ * @section Requirements
+ * The project uses cmake and g++ for compilation.
+ * SFML requires these packages: \n
+ * libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libdrm-dev libgbm-dev
+ * @section Compilation
+ * Use cmake for compilation: \n
+ * cmake -B build -DCMAKE_BUILD_TYPE=Release \n
+ * cmake --build build --config Release \n
+ * @section Optimization
+ * If not debugging, it is recommended to compile as Release, it can yield a substantial performance increase.
+ */
+
 /**
  * @details
  * Feel free to experiment with different number of fishes, based on your systems performance.

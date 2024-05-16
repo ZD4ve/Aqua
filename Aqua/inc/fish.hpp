@@ -8,6 +8,12 @@
 
 namespace aq {
 
+/**
+ * @brief Represents a fish
+ * @details
+ * It has a position, a velocity and stores the forces acting on it.
+ * It staticly stores some textures and can be drawn to the screen.
+ */
 class Fish {
    private:
     vec position;

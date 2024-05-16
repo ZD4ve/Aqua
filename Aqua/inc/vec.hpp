@@ -9,8 +9,9 @@ concept arithmetic = std::integral<num> or std::floating_point<num>;
 
 /**
  * @brief A 2D vector
- * @details Internally uses double for the coordinates
- * Fully compatible with SFML's sf::Vector2 class
+ * @details
+ * Internally uses double for the coordinates.
+ * Fully compatible with SFML's sf::Vector2 class.
  */
 struct vec {
    private:

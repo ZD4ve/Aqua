@@ -4,6 +4,9 @@
 
 namespace aq {
 
+/**
+ * @brief Represents a HSL color with some randomness
+ */
 class Color {
    public:
     double H;
@@ -42,7 +45,9 @@ class Color {
         double hue = std::rand() % 360;
         return Color(hue, saturation, lightness, color_variation);
     }
-
+    /**
+     * @brief Converts to a RGB color with some randomness in the Hue
+     */
     operator sf::Color() const {
         return HSLtoRGB(H + r * distribution(rNorm()), S, L);
     }

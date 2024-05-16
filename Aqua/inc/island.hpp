@@ -5,6 +5,9 @@
 
 namespace aq {
 
+/**
+ * @brief Responsible for handleing the island shader
+ */
 class Island {
    public:
     /**

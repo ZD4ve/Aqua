@@ -8,6 +8,9 @@
 
 namespace aq {
 
+/**
+ * @brief The game engine setting up, running and shutting down the game
+ */
 class Engine {
    private:
     sf::RenderWindow *window;
@@ -23,7 +26,7 @@ class Engine {
     explicit Engine(vec window_size, size_t fish_number, unsigned int seed);
     void draw();
     /**
-     * @brief Starts the background process for the calculations 
+     * @brief Starts the background process for the calculations
      */
     void startParallelLife();
     /**

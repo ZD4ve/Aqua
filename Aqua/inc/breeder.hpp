@@ -7,6 +7,9 @@
 
 namespace aq {
 
+/**
+ * @brief Fish generator
+ */
 class Breeder {
    public:
     struct Settings {
