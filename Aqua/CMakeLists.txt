@@ -15,7 +15,7 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 
 #Gtest
-find_package(GTest QUIET)
+find_package(GTest)
 if (NOT GTest_FOUND)
     include(FetchContent)
     FetchContent_Declare(
@@ -25,6 +25,8 @@ if (NOT GTest_FOUND)
     )
     FetchContent_MakeAvailable(googletest)
 endif ()
+
+
 
 
 function(add_compile_options target)
