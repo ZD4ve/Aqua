@@ -38,7 +38,7 @@ constexpr double alpha = 0.01;
 #endif
 
 int main() {
-    aq::Engine eng(vec(1920, 1080), NUMBER_OF_FISH, 0);  // std::time(nullptr)
+    aq::Engine eng(vec(1920, 1080), NUMBER_OF_FISH, std::time(nullptr));
 
     eng.startParallelLife();
 

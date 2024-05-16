@@ -20,8 +20,6 @@ void Engine::handleEvents() {
             case Event::MouseButtonReleased: {
                 right_mouse_down = sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
                 left_mouse_down = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
-                // if(left_mouse_down) mousePosition = left_mouse_down ? current_pixel : vec(0, 0);
-
                 break;
             }
             case Event::MouseMoved: {
