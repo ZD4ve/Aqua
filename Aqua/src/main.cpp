@@ -16,14 +16,17 @@
  * cmake --build build --config Release \n
  * @section Optimization
  * If not debugging, it is recommended to compile as Release, it can yield a substantial performance increase.
+ * @section Testing
+ * There are tests for the GUI independent forces, for the fish dead state and for the fish vision.
+ * There are no memory leaks, with address sanitizer.
  */
 
 /**
- * @details
+ * @def
  * Feel free to experiment with different number of fishes, based on your systems performance.
- * On my machine it can run 3x of fish in Release.
+ * Compiling as Release, can yield a substantial performance increase.
  */
-#define NUMBER_OF_FISH 3000
+#define NUMBER_OF_FISH 100
 // #define FPS_COUNTER
 
 #ifdef FPS_COUNTER
