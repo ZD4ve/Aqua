@@ -1,7 +1,5 @@
 #include "net.hpp"
 
-// #include <omp.h>
-
 #include <cmath>
 
 using namespace aq;
@@ -13,11 +11,13 @@ Net::Net(Breeder breeder, size_t mapSize) : fish_cnt(breeder.getCnt()), mapSize(
     if (cnt == 0) throw std::logic_error("Fish see farther than map size!");
     cellSize = mapSize / static_cast<float>(cnt);
     cellCnt = mapSize / cellSize;
-    grid = new Net::cell *[cellCnt];
-    grid[0] = new Net::cell[(cellCnt) * (cellCnt)];
-    for (size_t i = 1; i < cellCnt; i++) {
-        grid[i] = grid[i - 1] + cellCnt;
+
+    grid = new Net::cell *[cellCnt + 2];
+    grid[0] = new Net::cell[(cellCnt + 2) * (cellCnt + 2)];
+    for (size_t i = 1; i < cellCnt + 2; i++) {
+        grid[i] = grid[i - 1] + cellCnt + 2;
     }
+
     for (size_t i = 0; i < fish_cnt; i++) {
         at(getCord(storage[i])).push_front(&storage[i]);
     }
@@ -54,8 +54,8 @@ void Net::moveFishWhile(std::stop_token life) {
 }
 Net::cell &Net::at(vec cord) {
     auto v = cord.whole();
-    v.x = std::clamp(v.x, 0L, static_cast<ssize_t>(cellCnt - 1));
-    v.y = std::clamp(v.y, 0L, static_cast<ssize_t>(cellCnt - 1));
+    v.x = std::clamp(v.x, -1L, static_cast<ssize_t>(cellCnt));
+    v.y = std::clamp(v.y, -1L, static_cast<ssize_t>(cellCnt));
 
     return grid[v.x][v.y];
 }
